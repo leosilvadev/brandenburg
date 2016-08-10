@@ -1,0 +1,10 @@
+{
+	"books-api": {
+		"url":"http://localhost:8090",
+		"endpoints":[{
+			"method":"GET",
+			"pathFrom":"/v1/books",
+			"pathTo":"/available"
+		}]
+	}
+}
