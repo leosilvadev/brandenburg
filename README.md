@@ -8,3 +8,10 @@ Implement a lightweight and simple API Proxy with Vert.x
 - [ ] Tests coverage
 - [ ] How To Documentation
 - [ ] Benchmarks using some cool tool such as [loader.io](http://loader.io)
+
+
+### How to contribute?
+- Fork it
+- Find bugs and open issues
+- Implement tests (Spock)
+- Implement features
