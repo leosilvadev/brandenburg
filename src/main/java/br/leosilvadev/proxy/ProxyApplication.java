@@ -1,12 +1,13 @@
 package br.leosilvadev.proxy;
 
-import io.vertx.core.Vertx;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.annotation.ComponentScan;
 
+@ComponentScan
 public class ProxyApplication {
 
 	public static void main(String[] args) {
-		Vertx vertx = Vertx.vertx();
-		vertx.deployVerticle(ProxyVerticle.class.getName());
+		SpringApplication.run(ProxyApplication.class, args);
 	}
 
 }

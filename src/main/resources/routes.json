@@ -1,0 +1,11 @@
+{
+	"books-api": {
+		"url": "http://localhost:8090",
+		"bind": {
+			"active": true,
+			"path":"/books",
+			"append_path":true
+		},
+		"endpoints":[]
+	}
+}
