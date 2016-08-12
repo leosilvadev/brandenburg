@@ -62,8 +62,7 @@ public class ProxyServer {
 					});
 					logger.info(String.format("API %s mapped successfully.", entry.getKey()));
 				});
-				server.requestHandler(router::accept);
-				server.listen(config.getPort(), onListening(future));
+				server.requestHandler(router::accept).listen(config.getPort(), onListening(future));
 			}
 		});
 		return future;
