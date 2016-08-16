@@ -31,6 +31,7 @@ public class ProxyServer {
 
 	public Future<ProxyServer> run() {
 		Future<ProxyServer> future = Future.future();
+		logger.info(String.format("Reading Routes file from %s", config.getRoutesFilePath()));
 		vertx.fileSystem().readFile(config.getRoutesFilePath(), (fileResult) -> {
 			Buffer buffer = fileResult.result();
 			if (buffer == null) {

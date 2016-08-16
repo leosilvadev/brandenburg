@@ -1,0 +1,11 @@
+{
+	"books-api": {
+		"url": "http://localhost:9000",
+		"bind": {
+			"active": true,
+			"path":"/users",
+			"append_path":true
+		},
+		"endpoints":[]
+	}
+}
