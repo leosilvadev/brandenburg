@@ -1,10 +1,11 @@
 plugins {
-  id 'java'
-  id 'groovy'
-  id 'application'
-  id 'eclipse'
-  id 'com.github.johnrengelman.shadow' version '1.2.3'
-  id 'jacoco'
+	id 'java'
+	id 'groovy'
+	id 'application'
+	id 'eclipse'
+	id 'com.github.johnrengelman.shadow' version '1.2.3'
+	id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.6.3'
 }
 
 sourceCompatibility = 1.8
@@ -13,6 +14,13 @@ jar {
 	manifest {
 		attributes 'Implementation-Title': 'vertx-api-proxy',
 		'Implementation-Version': version
+	}
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled = true
+		html.enabled = true
 	}
 }
 
@@ -32,8 +40,6 @@ dependencies {
 
 mainClassName = 'br.leosilvadev.proxy.ProxyApplication'
 
-shadowJar {
-	classifier = 'fat'
-}
+shadowJar { classifier = 'fat' }
 
 task wrapper(type: Wrapper) { gradleVersion = '2.8' }
