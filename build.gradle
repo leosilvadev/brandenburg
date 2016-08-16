@@ -4,6 +4,7 @@ plugins {
   id 'application'
   id 'eclipse'
   id 'com.github.johnrengelman.shadow' version '1.2.3'
+  id 'jacoco'
 }
 
 sourceCompatibility = 1.8
