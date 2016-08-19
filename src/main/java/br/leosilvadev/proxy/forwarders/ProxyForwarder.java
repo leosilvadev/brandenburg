@@ -1,6 +1,5 @@
-package br.leosilvadev.proxy.server;
+package br.leosilvadev.proxy.forwarders;
 
-import br.leosilvadev.proxy.handlers.RequestForwarder;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;

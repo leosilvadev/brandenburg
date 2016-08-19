@@ -1,4 +1,4 @@
-package br.leosilvadev.proxy.handlers;
+package br.leosilvadev.proxy.forwarders;
 
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerRequest;

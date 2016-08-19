@@ -1,4 +1,4 @@
-package br.leosilvadev.proxy.server;
+package br.leosilvadev.proxy.domains;
 
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
@@ -48,7 +48,7 @@ public class ProxyEndpointRoute {
 		return path.startsWith("/") ? path : "/" + path;
 	}
 	
-	static ProxyEndpointRoute from(String url, JsonObject json) {
+	public static ProxyEndpointRoute from(String url, JsonObject json) {
 		JsonObject from = json.getJsonObject("from");
 		HttpMethod fromMethod = HttpMethod.valueOf(from.getString("method"));
 		String fromPath = from.getString("path");

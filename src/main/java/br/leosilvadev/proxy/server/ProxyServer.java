@@ -1,5 +1,8 @@
 package br.leosilvadev.proxy.server;
 
+import br.leosilvadev.proxy.domains.ProxyEndpointRoute;
+import br.leosilvadev.proxy.forwarders.ProxyForwarder;
+import br.leosilvadev.proxy.routers.ProxyRouter;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;

@@ -1,6 +1,7 @@
-package br.leosilvadev.proxy.server;
+package br.leosilvadev.proxy.routers;
 
-import br.leosilvadev.proxy.handlers.RequestForwarder;
+import br.leosilvadev.proxy.domains.ProxyEndpointRoute;
+import br.leosilvadev.proxy.forwarders.RequestForwarder;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
