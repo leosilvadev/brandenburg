@@ -41,7 +41,7 @@ Configure your routes files (routes.json)
 		"endpoints": [{
 			"from": {
 				"method":"PUT",
-				"/v1/users",
+				"/v1/users"
 			},
 			"to": {
 				"method":"POST",
@@ -50,7 +50,7 @@ Configure your routes files (routes.json)
 		}, {
 			"from": {
 				"method":"GET",
-				"/v1/users",
+				"/v1/users"
 			},
 			"to": {
 				"/users"
