@@ -1,4 +1,4 @@
-package br.leosilvadev.proxy.server
+package br.leosilvadev.proxy.server.bind
 
 import static io.restassured.RestAssured.*
 import static io.restassured.matcher.RestAssuredMatchers.*
@@ -10,10 +10,13 @@ import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.handler.BodyHandler
 import spock.util.concurrent.AsyncConditions
 import br.leosilvadev.proxy.IntegrationSpec
+import br.leosilvadev.proxy.server.ProxyServerFixture;
 
-class ProxyServerSpec extends IntegrationSpec {
-
+class ProxyServerBindingSpec extends IntegrationSpec {
+	
 	def setupSpec() {
+		deployProxyVerticle('routes-bind.json')
+		
 		def conds = new AsyncConditions()
 		def server = ProxyServerFixture.buildServer vertx
 		server.listen(9000) { res ->

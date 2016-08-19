@@ -14,9 +14,9 @@ class IntegrationSpec extends Specification {
 	@Shared Vertx vertx
 	@Shared HttpClient client
 	
-	def setupSpec() {
+	def deployProxyVerticle(String routesPath) {
 		def conds = new AsyncConditions()
-		def options = new DeploymentOptions().setConfig(new JsonObject().put('routesPath', 'routes-test.json'))
+		def options = new DeploymentOptions().setConfig(new JsonObject().put('routesPath', routesPath))
 		
 		vertx = Vertx.vertx()
 		client = vertx.createHttpClient()

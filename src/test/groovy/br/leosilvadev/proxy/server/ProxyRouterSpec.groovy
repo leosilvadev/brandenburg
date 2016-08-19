@@ -1,5 +1,6 @@
 package br.leosilvadev.proxy.server
 
+import br.leosilvadev.proxy.server.ProxyRouter;
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpMethod
 import io.vertx.ext.web.Router
@@ -33,7 +34,7 @@ class ProxyRouterSpec extends Specification {
 		def pathTo = '/users'
 
 		when:
-		def route = proxyRouter.route(method, url, pathFrom, pathTo) {}
+		def route = proxyRouter.route(url, method, pathFrom, method, pathTo) {}
 
 		then: 'there must be only one registered route'
 		router.routes.size() == 1

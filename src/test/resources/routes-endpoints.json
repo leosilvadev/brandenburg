@@ -1,0 +1,24 @@
+{
+	"books-api": {
+		"url": "http://localhost:9000",
+		"endpoints": [{
+			"from": {
+				"method":"GET",
+				"path":"/users"
+			},
+			"to": {
+				"method":"GET",
+				"path":"/users"
+			}
+		}, {
+			"from": {
+				"method":"PUT",
+				"path":"/users"
+			},
+			"to": {
+				"method":"POST",
+				"path":"/users"
+			}
+		}]
+	}
+}

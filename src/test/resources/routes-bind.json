@@ -6,6 +6,6 @@
 			"path":"/users",
 			"append_path":true
 		},
-		"endpoints":[]
+		"endpoints": []
 	}
 }

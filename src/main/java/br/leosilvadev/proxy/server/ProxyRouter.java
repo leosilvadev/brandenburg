@@ -28,13 +28,12 @@ public class ProxyRouter {
 		});
 	}
 
-	public Route route(HttpMethod method, String url, String pathFrom, String pathTo, RequestForwarder forwarder) {
-		String finalPathFrom = pathFrom.startsWith("/") ? pathFrom : "/" + pathFrom;
-		String finalPathTo = pathTo.startsWith("/") ? pathTo : "/" + pathTo;
-		String targetUrl = url + finalPathTo;
-		logger.info(String.format("Routing endpoint with method %s and path %s to api %s", method, finalPathFrom, targetUrl));
-		return router.route(method, finalPathFrom).handler((context) -> {
-			forwarder.forward(method, targetUrl, context.request(), context.response());
+	public Route route(ProxyEndpointRoute route, RequestForwarder forwarder) {
+		String pathFrom = route.getFromPath();
+		String urlTo = route.getUrlTo();
+		logger.info(String.format("Routing endpoint with method %s and path %s to api %s", route.getFromMethod(), pathFrom, urlTo));
+		return router.route(route.getFromMethod(), pathFrom).handler((context) -> {
+			forwarder.forward(route.getToMethod(), urlTo, context.request(), context.response());
 		});
 	}
 
