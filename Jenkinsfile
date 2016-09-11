@@ -11,4 +11,9 @@ node {
    stage 'Build'
    sh "chmod u+x gradlew"
    sh "./gradlew clean build"
+
+   step([$class: 'GitHubCommitStatusSetter',
+      contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: 'Build'],
+      statusResultSource: [$class: 'ConditionalStatusResultSource',
+      results: [[$class: 'AnyBuildResult', message: 'Project was built successfully!', state: 'SUCCESS']]]])
 }
