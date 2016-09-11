@@ -10,7 +10,7 @@ node {
 
    stage 'Build'
    sh "chmod u+x gradlew"
-   sh "./gradlew clean build"
+   sh "gradle clean build"
 
    step([$class: 'GitHubCommitStatusSetter',
       contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: 'Build'],
