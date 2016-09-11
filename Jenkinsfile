@@ -1,8 +1,4 @@
 node {
-
-   stage 'Checkout'
-   checkout scm
-
    step([$class: 'GitHubCommitStatusSetter',
       contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: 'Checkout'],
       statusResultSource: [$class: 'ConditionalStatusResultSource',
