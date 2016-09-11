@@ -10,7 +10,7 @@ node {
       allowMissing: false,
       alwaysLinkToLastBuild: false,
       keepAll: true,
-      reportDir: "/var/lib/jenkins/workspace/vertx-api-proxy/${env.BRANCH_NAME}/build/reports/tests/",
+      reportDir: "${env.WORKSPACE}/build/reports/tests/",
       reportFiles: 'index.html',
       reportName: "Test Report"
     ])
