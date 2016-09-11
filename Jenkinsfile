@@ -17,3 +17,4 @@ node {
       statusResultSource: [$class: 'ConditionalStatusResultSource',
       results: [[$class: 'AnyBuildResult', message: 'Project was built successfully!', state: 'SUCCESS']]]])
 }
+
