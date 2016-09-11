@@ -1,6 +1,4 @@
 node {
-   git(url: 'https://github.com/leosilvadev/vertx-api-proxy', branch: "'${env.BRANCH_NAME}'")
-
    step([$class: 'GitHubCommitStatusSetter',
       contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: 'Checkout'],
       statusResultSource: [$class: 'ConditionalStatusResultSource',
