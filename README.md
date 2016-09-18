@@ -41,7 +41,7 @@ Configure your routes files (routes.json)
 		"endpoints": [{
 			"from": {
 				"method":"PUT",
-				"/v1/users",
+				"/v1/users"
 			},
 			"to": {
 				"method":"POST",
@@ -50,7 +50,7 @@ Configure your routes files (routes.json)
 		}, {
 			"from": {
 				"method":"GET",
-				"/v1/users",
+				"/v1/users"
 			},
 			"to": {
 				"/users"
@@ -59,17 +59,26 @@ Configure your routes files (routes.json)
 	}
 }
 ```
-- books-api: is your api identifier (must be unique)
-- books-api.url: its url (really?)
-- books-api.bind: define if your proxy will bind all endpoints from the given api
-- books-api.bind.active: must be configured but inactivated
-- books-api.bind.path: all the api endpoints will be bound to this path
-- books-api.bind.append_path: define if your api will have the requests appended with the given path
+- **books-api:** is your api identifier (must be unique)
+- **books-api.url:** its url (really?)
+- **books-api.bind:** define if your proxy will bind all endpoints from the given api
+- **books-api.bind.active:** must be configured but inactivated
+- **books-api.bind.path:** all the api endpoints will be bound to this path
+- **books-api.bind.append_path:** define if your api will have the requests appended with the given path
+- **books-api.endpoints:** the list of your endpoints (used to define specifics endpoints instead of the whole api)
+- **books-api.endpoints.from:** define the endpoint registered at your proxy (that will forward to your api)
+- **books-api.endpoints.from.method:** the method to be used at your proxy
+- **books-api.endpoints.from.path:** the path to be used at your proxy
+- **books-api.endpoints.to:** define the endpoint to be forwarded (inside the given api url)
+- **books-api.endpoints.to.method:** the method to be forwarded (if empty the from.method will be used)
+- **books-api.endpoints.to.path:** the path to be forwarded
 
-- books-api.endpoints: the list of your endpoints (used to define specifics endpoints instead of the whole api)
-- books-api.endpoints.from: define the endpoint registered at your proxy (that will forward to your api)
-- books-api.endpoints.from.method: the method to be used at your proxy
-- books-api.endpoints.from.path: the path to be used at your proxy
-- books-api.endpoints.to: define the endpoint to be forwarded (inside the given api url)
-- books-api.endpoints.to.method: the method to be forwarded (if empty the from.method will be used)
-- books-api.endpoints.to.path: the path to be forwarded
+Build your proxy
+```
+./gradlew installDist
+```
+
+Run your proxy
+```
+./build/install/vertx-api-proxy/bin/vertx-api-proxy
+```
