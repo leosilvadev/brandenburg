@@ -10,6 +10,8 @@ public class ProxyEndpointRoute {
 	private final String fromPath;
 	private final HttpMethod toMethod;
 	private final String toPath;
+	private Long timeout;
+	private String permission;
 
 	public ProxyEndpointRoute(String url, HttpMethod fromMethod, String fromPath, HttpMethod toMethod, String toPath) {
 		super();
@@ -18,6 +20,12 @@ public class ProxyEndpointRoute {
 		this.fromPath = fromPath;
 		this.toMethod = toMethod;
 		this.toPath = toPath;
+	}
+	
+	public ProxyEndpointRoute(String url, HttpMethod fromMethod, String fromPath, HttpMethod toMethod, String toPath, Long timeout, String permission) {
+		this(url, fromMethod, fromPath, toMethod, toPath);
+		this.timeout = timeout;
+		this.permission = permission;
 	}
 	
 	public String getUrl() {
@@ -43,18 +51,32 @@ public class ProxyEndpointRoute {
 	public String getToPath() {
 		return pathOf(toPath);
 	}
+	
+	public Long getTimeout() {
+		return timeout;
+	}
+	
+	public String getPermission() {
+		return permission;
+	}
 
 	private String pathOf(String path) {
 		return path.startsWith("/") ? path : "/" + path;
 	}
 	
-	public static ProxyEndpointRoute from(String url, JsonObject json) {
+	public static ProxyEndpointRoute from(String url, JsonObject json, Long defaultTimeout) {
 		JsonObject from = json.getJsonObject("from");
 		HttpMethod fromMethod = HttpMethod.valueOf(from.getString("method"));
 		String fromPath = from.getString("path");
 		JsonObject to = json.getJsonObject("to");
 		HttpMethod toMethod = to.getString("method") != null ? HttpMethod.valueOf(to.getString("method")) : fromMethod;
 		String toPath = to.getString("path");
-		return new ProxyEndpointRoute(url, fromMethod, fromPath, toMethod, toPath);
+		Long timeout = to.getLong("timeout", defaultTimeout);
+		String permission = to.getString("permission");
+		return new ProxyEndpointRoute(url, fromMethod, fromPath, toMethod, toPath, timeout, permission);
+	}
+
+	public static ProxyEndpointRoute from(String url, JsonObject json) {
+		return from(url, json, null);
 	}
 }

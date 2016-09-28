@@ -1,5 +1,6 @@
 package br.leosilvadev.proxy.forwarders;
 
+import br.leosilvadev.proxy.domains.TargetEndpoint;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
@@ -7,7 +8,6 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.logging.Logger;
@@ -24,17 +24,20 @@ public class ProxyForwarder implements RequestForwarder {
 	}
 
 	@Override
-	public void forward(HttpMethod httpMethod, String url, HttpServerRequest cliRequest, HttpServerResponse cliResponse) {
+	public void forward(TargetEndpoint endpoint, HttpServerRequest cliRequest, HttpServerResponse cliResponse) {
 		HttpClient client = vertx.createHttpClient();
-		logger.info(String.format("Requesting %s to %s", httpMethod, url));
-		HttpClientRequest request = buildRequest(httpMethod, url, cliResponse, client);
+		logger.info(String.format("Requesting %s to %s", endpoint.getMethod(), endpoint.getUrl()));
+		HttpClientRequest request = buildRequest(endpoint, cliResponse, client);
 		cliRequest.bodyHandler(fillRequestAndSend(request, cliRequest.headers()));
 	}
 
-	private HttpClientRequest buildRequest(HttpMethod httpMethod, String url, HttpServerResponse cliResponse,
-			HttpClient client) {
-		return client.requestAbs(httpMethod, url, handleResponse(cliResponse))
+	private HttpClientRequest buildRequest(TargetEndpoint endpoint, HttpServerResponse cliResponse, HttpClient client) {
+		HttpClientRequest request = client.requestAbs(endpoint.getMethod(), endpoint.getUrl(), handleResponse(cliResponse))
 				.exceptionHandler(handleException(cliResponse));
+		
+		if (endpoint.hasTimeout()) request.setTimeout(endpoint.getTimeout());
+		
+		return request;
 	}
 
 	private Handler<HttpClientResponse> handleResponse(HttpServerResponse cliResponse) {

@@ -49,6 +49,7 @@ public class ProxyServer {
 					logger.info(String.format("Mapping API %s ...", entry.getKey()));
 					JsonObject apiConfig = (JsonObject) entry.getValue();
 					String url = apiConfig.getString("url");
+					Long timeout = apiConfig.getLong("timeout");
 					JsonObject bind = apiConfig.getJsonObject("bind");
 					if (bind != null && bind.getBoolean("active")) {
 						String path = bind.getString("path");
@@ -58,7 +59,7 @@ public class ProxyServer {
 					JsonArray endpointsConfig = apiConfig.getJsonArray("endpoints");
 					endpointsConfig.forEach((conf) -> {
 						JsonObject json = (JsonObject) conf;
-						proxyRouter.route(ProxyEndpointRoute.from(url, json), proxyForwarder);
+						proxyRouter.route(ProxyEndpointRoute.from(url, json, timeout), proxyForwarder);
 					});
 					logger.info(String.format("API %s mapped successfully.", entry.getKey()));
 				});
