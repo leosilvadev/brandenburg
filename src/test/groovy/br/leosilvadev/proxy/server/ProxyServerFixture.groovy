@@ -11,6 +11,12 @@ class ProxyServerFixture {
 
 	static HttpServer buildServer(Vertx vertx) {
 		def router = Router.router(vertx)
+		router.get('/users/timeout').handler { RoutingContext context -> }
+		router.get('/users/badRequest').handler { RoutingContext context -> 
+			context.response().setStatusCode(400)
+					.putHeader('application', 'vertx-proxy')
+					.end()
+		}
 		router.get('/users').handler { RoutingContext context ->
 			def users = JsonOutput.toJson([
 				[name:'User 1', alias:'U1'],

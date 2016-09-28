@@ -3,6 +3,9 @@ package br.leosilvadev.proxy.server.bind
 import static io.restassured.RestAssured.*
 import static io.restassured.matcher.RestAssuredMatchers.*
 import static org.hamcrest.Matchers.*
+
+import org.apache.http.HttpStatus;
+
 import groovy.json.JsonOutput
 import io.restassured.http.ContentType
 import io.vertx.ext.web.Router
@@ -33,7 +36,7 @@ class ProxyServerBindingSpec extends IntegrationSpec {
 		def response = request.get('http://localhost:8000/users')
 
 		then:
-		response.statusCode() == 200
+		response.statusCode() == HttpStatus.SC_OK
 
 		and:
 		response.contentType() == 'application/json'
@@ -51,10 +54,35 @@ class ProxyServerBindingSpec extends IntegrationSpec {
 		def response = request.post('http://localhost:8000/users')
 
 		then:
-		response.statusCode() == 201
+		response.statusCode() == HttpStatus.SC_CREATED
 
 		and:
 		response.contentType() == 'application/json'
+
+		and:
+		response.header('application') == 'vertx-proxy'
+	}
+
+	def 'Should return timeout when calling /timeout'() {
+		given:
+		def request = given().accept(ContentType.JSON)
+
+		when:
+		def response = request.get('http://localhost:8000/users/timeout')
+
+		then:
+		response.statusCode() == HttpStatus.SC_GATEWAY_TIMEOUT
+	}
+
+	def 'Should return status 400 when calling /badRequest'() {
+		given:
+		def request = given().accept(ContentType.JSON)
+
+		when:
+		def response = request.get('http://localhost:8000/users/badRequest')
+
+		then:
+		response.statusCode() == HttpStatus.SC_BAD_REQUEST
 
 		and:
 		response.header('application') == 'vertx-proxy'

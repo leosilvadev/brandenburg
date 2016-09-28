@@ -1,6 +1,7 @@
 package br.leosilvadev.proxy.forwarders;
 
 import br.leosilvadev.proxy.domains.TargetEndpoint;
+import br.leosilvadev.proxy.resolvers.ResponseErrorResolver;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
@@ -59,8 +60,9 @@ public class ProxyForwarder implements RequestForwarder {
 
 	private Handler<Throwable> handleException(HttpServerResponse cliResponse) {
 		return (ex) -> {
+			Integer status = ResponseErrorResolver.resolveStatus(ex);
 			logger.error(ex.getMessage(), ex);
-			cliResponse.setStatusCode(500).end(ex.getMessage());
+			cliResponse.setStatusCode(status).end(ex.getMessage());
 		};
 	}
 

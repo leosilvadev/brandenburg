@@ -50,11 +50,12 @@ public class ProxyServer {
 					JsonObject apiConfig = (JsonObject) entry.getValue();
 					String url = apiConfig.getString("url");
 					Long timeout = apiConfig.getLong("timeout");
+					String permission = apiConfig.getString("permission");
 					JsonObject bind = apiConfig.getJsonObject("bind");
 					if (bind != null && bind.getBoolean("active")) {
 						String path = bind.getString("path");
 						Boolean appendPath = bind.getBoolean("append_path");
-						proxyRouter.route(url, path, appendPath, proxyForwarder);
+						proxyRouter.route(url, path, timeout, permission, appendPath, proxyForwarder);
 					}
 					JsonArray endpointsConfig = apiConfig.getJsonArray("endpoints");
 					endpointsConfig.forEach((conf) -> {
