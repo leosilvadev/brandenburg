@@ -1,16 +1,12 @@
 package br.leosilvadev.proxy.server;
 
-import br.leosilvadev.proxy.domains.ProxyEndpointRoute;
-import br.leosilvadev.proxy.forwarders.ProxyForwarder;
+import br.leosilvadev.proxy.readers.RoutesReader;
 import br.leosilvadev.proxy.routers.ProxyRouter;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServer;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Router;
@@ -34,38 +30,9 @@ public class ProxyServer {
 	public Future<ProxyServer> run() {
 		Future<ProxyServer> future = Future.future();
 		logger.info(String.format("Reading Routes file from %s", config.getRoutesFilePath()));
-		vertx.fileSystem().readFile(config.getRoutesFilePath(), (fileResult) -> {
-			Buffer buffer = fileResult.result();
-			if (buffer == null) {
-				String message = String.format("Routes File %s not found!", config.getRoutesFilePath());
-				logger.error(message, config.getRoutesFilePath());
-				future.fail(message);
-
-			} else {
-				JsonObject routes = buffer.toJsonObject();
-				ProxyRouter proxyRouter = new ProxyRouter(router);
-				ProxyForwarder proxyForwarder = new ProxyForwarder(vertx);
-				routes.forEach((entry) -> {
-					logger.info(String.format("Mapping API %s ...", entry.getKey()));
-					JsonObject apiConfig = (JsonObject) entry.getValue();
-					String url = apiConfig.getString("url");
-					Long timeout = apiConfig.getLong("timeout");
-					String permission = apiConfig.getString("permission");
-					JsonObject bind = apiConfig.getJsonObject("bind");
-					if (bind != null && bind.getBoolean("active")) {
-						String path = bind.getString("path");
-						Boolean appendPath = bind.getBoolean("append_path");
-						proxyRouter.route(url, path, timeout, permission, appendPath, proxyForwarder);
-					}
-					JsonArray endpointsConfig = apiConfig.getJsonArray("endpoints");
-					endpointsConfig.forEach((conf) -> {
-						JsonObject json = (JsonObject) conf;
-						proxyRouter.route(ProxyEndpointRoute.from(url, json, timeout), proxyForwarder);
-					});
-					logger.info(String.format("API %s mapped successfully.", entry.getKey()));
-				});
-				server.requestHandler(router::accept).listen(config.getPort(), onListening(future));
-			}
+		new RoutesReader(vertx).read(config.getRoutesFilePath(), routes -> {
+			new ProxyRouter(vertx, router).route(routes);
+			return server.requestHandler(router::accept).listen(config.getPort(), onListening(future));
 		});
 		return future;
 	}

@@ -19,7 +19,7 @@ class ProxyRouterSpec extends Specification {
 		Router router = Router.router(vertx)
 
 		and:
-		def proxyRouter = new ProxyRouter(router)
+		def proxyRouter = new ProxyRouter(vertx, router)
 
 		and:
 		def method = HttpMethod.POST
