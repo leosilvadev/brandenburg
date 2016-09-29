@@ -3,7 +3,7 @@ package br.leosilvadev.proxy.routers;
 import br.leosilvadev.proxy.domains.ProxyEndpointRoute;
 import br.leosilvadev.proxy.domains.TargetEndpoint;
 import br.leosilvadev.proxy.domains.TargetEndpoint.TargetEndpointBuilder;
-import br.leosilvadev.proxy.forwarders.ProxyForwarder;
+import br.leosilvadev.proxy.forwarders.ProxyRequestForwarder;
 import br.leosilvadev.proxy.forwarders.RequestForwarder;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
@@ -61,7 +61,7 @@ public class ProxyRouter {
 	}
 
 	public void route(JsonObject routes) {
-		ProxyForwarder proxyForwarder = new ProxyForwarder(vertx);
+		ProxyRequestForwarder proxyForwarder = new ProxyRequestForwarder(vertx);
 		routes.forEach((entry) -> {
 			logger.info(String.format("Mapping API %s ...", entry.getKey()));
 			JsonObject apiConfig = (JsonObject) entry.getValue();

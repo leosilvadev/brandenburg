@@ -3,23 +3,20 @@ package br.leosilvadev.proxy.server.bind
 import static io.restassured.RestAssured.*
 import static io.restassured.matcher.RestAssuredMatchers.*
 import static org.hamcrest.Matchers.*
-
-import org.apache.http.HttpStatus;
-
 import groovy.json.JsonOutput
 import io.restassured.http.ContentType
-import io.vertx.ext.web.Router
-import io.vertx.ext.web.RoutingContext
-import io.vertx.ext.web.handler.BodyHandler
+
+import org.apache.http.HttpStatus
+
 import spock.util.concurrent.AsyncConditions
 import br.leosilvadev.proxy.IntegrationSpec
-import br.leosilvadev.proxy.server.ProxyServerFixture;
+import br.leosilvadev.proxy.server.ProxyServerFixture
 
 class ProxyServerBindingSpec extends IntegrationSpec {
-	
+
 	def setupSpec() {
 		deployProxyVerticle('routes-bind.json')
-		
+
 		def conds = new AsyncConditions()
 		def server = ProxyServerFixture.buildServer vertx
 		server.listen(9000) { res ->
@@ -86,5 +83,26 @@ class ProxyServerBindingSpec extends IntegrationSpec {
 
 		and:
 		response.header('application') == 'vertx-proxy'
+	}
+
+	def 'Should forward a GET request to /users/xml, asking for an xml response'() {
+		given:
+		def user = [name: 'leonardo']
+		def request = given().accept(ContentType.XML)
+
+		when:
+		def response = request.get('http://localhost:8000/users/xml')
+
+		then:
+		response.statusCode() == 200
+
+		and:
+		response.contentType() == 'application/xml'
+
+		and:
+		response.header('application') == 'vertx-proxy'
+
+		and:
+		response.body().xmlPath()
 	}
 }

@@ -29,6 +29,22 @@ class ProxyServerFixture {
 					.putHeader('content-type', 'application/json')
 					.end(users)
 		}
+		router.get('/users/xml').handler { RoutingContext context ->
+			def users = '''
+				<users>
+					<user id="1">
+						<name>User 1</name>
+						<age>20</age>
+					</user>
+				</users>
+			'''
+			context.response()
+					.setChunked(true)
+					.setStatusCode(200)
+					.putHeader('application', 'vertx-proxy')
+					.putHeader('content-type', 'application/xml')
+					.end(users)
+		}
 		router.post('/users').handler BodyHandler.create()
 		router.post('/users').handler { RoutingContext context ->
 			def user = context.getBodyAsJson()

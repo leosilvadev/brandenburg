@@ -14,13 +14,13 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
-public class ProxyForwarder implements RequestForwarder {
+public class ProxyRequestForwarder implements RequestForwarder {
 
-	private static final Logger logger = LoggerFactory.getLogger(ProxyForwarder.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProxyRequestForwarder.class);
 
 	private final Vertx vertx;
 
-	public ProxyForwarder(Vertx vertx) {
+	public ProxyRequestForwarder(Vertx vertx) {
 		this.vertx = vertx;
 	}
 
