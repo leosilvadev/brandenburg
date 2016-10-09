@@ -38,14 +38,6 @@ public class ProxyRouter {
 		});
 	}
 
-	public Route route(String url, String targetPath, Boolean appendPath, RequestForwarder forwarder) {
-		return route(url, targetPath, null, null, appendPath, forwarder);
-	}
-
-	public Route route(String url, String targetPath, RequestForwarder forwarder) {
-		return route(url, targetPath, null, null, Boolean.FALSE, forwarder);
-	}
-
 	public Route route(ProxyEndpointRoute route, RequestForwarder forwarder) {
 		String pathFrom = route.getFromPath();
 		String urlTo = route.getUrlTo();
@@ -81,6 +73,14 @@ public class ProxyRouter {
 			});
 			logger.info(String.format("API %s mapped successfully.", entry.getKey()));
 		});
+	}
+
+	public Route route(String url, String targetPath, Boolean appendPath, RequestForwarder forwarder) {
+		return route(url, targetPath, null, null, appendPath, forwarder);
+	}
+
+	public Route route(String url, String targetPath, RequestForwarder forwarder) {
+		return route(url, targetPath, null, null, Boolean.FALSE, forwarder);
 	}
 	
 }
