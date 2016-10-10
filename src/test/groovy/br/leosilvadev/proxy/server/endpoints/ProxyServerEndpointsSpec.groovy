@@ -5,6 +5,7 @@ import static io.restassured.matcher.RestAssuredMatchers.*
 import static org.hamcrest.Matchers.*
 import groovy.json.JsonOutput
 import io.restassured.http.ContentType
+import io.vertx.core.Future;
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.handler.BodyHandler
@@ -19,7 +20,8 @@ class ProxyServerEndpointsSpec extends IntegrationSpec {
 		
 		def conds = new AsyncConditions()
 		def server = ProxyServerFixture.buildServer vertx
-		server.listen(9000) { res ->
+		server.listen(9000) { Future res ->
+			if(res.failed()) res.cause().printStackTrace()
 			conds.evaluate { assert res.succeeded() }
 		}
 		conds.await 5
