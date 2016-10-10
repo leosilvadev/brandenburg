@@ -1,20 +1,27 @@
 package br.leosilvadev.proxy.server;
 
-import org.springframework.stereotype.Component;
-
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
-@Component
 public class ProxyVerticle extends AbstractVerticle {
 
-	@Override
-	public void start() throws Exception {
-		JsonObject config = config();
-		String envPort = System.getenv("PORT");
-		Integer port = config.getInteger("port", envPort==null ? 8000 : Integer.parseInt(envPort));
-		String routesPath = config.getString("routesPath", ProxyServerConfig.DEFAULT_ROUTES_FILE);
-		new ProxyServer(vertx, new ProxyServerConfig(port, routesPath)).run();
-	}
+	private static final Logger logger = LoggerFactory.getLogger(ProxyVerticle.class);
 
+	@Override
+	public void start(Future<Void> future) throws Exception {
+		try {
+			JsonObject config = config();
+			Integer port = config.getInteger("port", 8000);
+			String routesPath = config.getString("routesPath", ProxyServerConfig.DEFAULT_ROUTES_FILE);
+			new ProxyServer(vertx, new ProxyServerConfig(port, routesPath)).run();
+			future.complete();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			logger.error(ex.getMessage(), ex);
+			future.fail(ex);
+		}
+	}
 }

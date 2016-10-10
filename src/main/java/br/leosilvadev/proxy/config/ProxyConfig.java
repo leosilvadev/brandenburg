@@ -17,16 +17,22 @@ public class ProxyConfig {
 	ProxyVerticle proxyVerticle;
 
 	@Bean
+	public ApplicationConfig applicationConfig() {
+		Buffer buffer = vertx().fileSystem().readFileBlocking("application.json");
+		JsonObject json = new JsonObject(buffer.toString());
+		JsonObject jsonCaching = json.getJsonObject("caching", new JsonObject());
+		return new ApplicationConfig(json.getInteger("port", 8000), json.getString("routesPath", "routes.json"),
+				jsonCaching.getString("host", "localhost"), jsonCaching.getInteger("port", 6379),
+				jsonCaching.getString("encoding", "UTF-8"), jsonCaching.getString("auth"));
+	}
+
+	@Bean
 	public Vertx vertx() {
-		Vertx vertx = Vertx.vertx();
-		vertx.deployVerticle(proxyVerticle);
-		return vertx;
+		return Vertx.vertx();
 	}
 
 	@Bean
 	public Caching caching() {
-		Buffer buffer = vertx().fileSystem().readFileBlocking("caching.json");
-		JsonObject json = new JsonObject(buffer.toString());
-		return new Caching(vertx()).config(json);
+		return new Caching(vertx()).config(applicationConfig());
 	}
 }
