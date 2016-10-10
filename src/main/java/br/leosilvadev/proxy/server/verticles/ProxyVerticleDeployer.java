@@ -1,4 +1,4 @@
-package br.leosilvadev.proxy.server;
+package br.leosilvadev.proxy.server.verticles;
 
 import javax.annotation.PostConstruct;
 
@@ -13,16 +13,14 @@ import io.vertx.core.json.JsonObject;
 @Component
 public class ProxyVerticleDeployer {
 
-	@Autowired
-	Vertx vertx;
-	@Autowired
-	ApplicationConfig applicationConfig;
+	@Autowired Vertx vertx;
+	@Autowired ApplicationConfig applicationConfig;
 
 	@PostConstruct
 	public void deploy() {
 		JsonObject json = new JsonObject()
-				.put("port", applicationConfig.getPort())
-				.put("routesPath", applicationConfig.getRoutesPath());
+				.put(ApplicationConfig.PORT_JSON, applicationConfig.getPort())
+				.put(ApplicationConfig.ROUTES_PATH_JSON, applicationConfig.getRoutesPath());
 		vertx.deployVerticle(new ProxyVerticle(), new DeploymentOptions().setConfig(json));
 	}
 

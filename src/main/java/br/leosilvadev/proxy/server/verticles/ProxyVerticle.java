@@ -1,5 +1,8 @@
-package br.leosilvadev.proxy.server;
+package br.leosilvadev.proxy.server.verticles;
 
+import br.leosilvadev.proxy.config.ApplicationConfig;
+import br.leosilvadev.proxy.server.ProxyServer;
+import br.leosilvadev.proxy.server.ProxyServerConfig;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
@@ -14,8 +17,8 @@ public class ProxyVerticle extends AbstractVerticle {
 	public void start(Future<Void> future) throws Exception {
 		try {
 			JsonObject config = config();
-			Integer port = config.getInteger("port", 8000);
-			String routesPath = config.getString("routesPath", ProxyServerConfig.DEFAULT_ROUTES_FILE);
+			Integer port = config.getInteger(ApplicationConfig.PORT_JSON, 8000);
+			String routesPath = config.getString(ApplicationConfig.ROUTES_PATH_JSON, ProxyServerConfig.DEFAULT_ROUTES_FILE);
 			new ProxyServer(vertx, new ProxyServerConfig(port, routesPath)).run();
 			future.complete();
 		} catch (Exception ex) {

@@ -1,5 +1,6 @@
 package br.leosilvadev.proxy.routers;
 
+import br.leosilvadev.proxy.domains.ProxyApiRoute;
 import br.leosilvadev.proxy.domains.ProxyEndpointRoute;
 import br.leosilvadev.proxy.domains.TargetEndpoint;
 import br.leosilvadev.proxy.domains.TargetEndpoint.TargetEndpointBuilder;
@@ -25,33 +26,6 @@ public class ProxyRouter {
 		this.router = router;
 	}
 
-	public Route route(String url, String targetPath, Long timeout, String permission, Boolean appendPath, RequestForwarder forwarder) {
-		String endpointPath = String.format("%s/*", targetPath);
-		logger.info(String.format("Routing all endpoints for %s to api %s", endpointPath, url));
-		return router.route(endpointPath).handler((context) -> {
-			TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, url, targetPath)
-					.appendPath(appendPath)
-					.setTimeout(timeout)
-					.setPermission(permission)
-					.build();
-			forwarder.forward(targetEndpoint, context.request(), context.response());
-		});
-	}
-
-	public Route route(ProxyEndpointRoute route, RequestForwarder forwarder) {
-		String pathFrom = route.getFromPath();
-		String urlTo = route.getUrlTo();
-		logger.info(String.format("Routing endpoint with method %s and path %s to api %s method %s", route.getFromMethod(), pathFrom, urlTo, route.getToMethod()));
-		return router.route(route.getFromMethod(), pathFrom).handler((context) -> {
-			TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, route.getUrlTo(), route.getToPath())
-					.setTimeout(route.getTimeout())
-					.setPermission(route.getPermission())
-					.setMethod(route.getToMethod())
-					.build();
-			 forwarder.forward(targetEndpoint, context.request(), context.response());
-		});
-	}
-
 	public void route(JsonObject routes) {
 		ProxyRequestForwarder proxyForwarder = new ProxyRequestForwarder(vertx);
 		routes.forEach((entry) -> {
@@ -61,10 +35,8 @@ public class ProxyRouter {
 			Long timeout = apiConfig.getLong("timeout");
 			String permission = apiConfig.getString("permission");
 			JsonObject bind = apiConfig.getJsonObject("bind");
-			if (bind != null && bind.getBoolean("active")) {
-				String path = bind.getString("path");
-				Boolean appendPath = bind.getBoolean("append_path");
-				route(url, path, timeout, permission, appendPath, proxyForwarder);
+			if (mustBindApi(bind)) {
+				route(ProxyApiRoute.from(url, bind, timeout, permission), proxyForwarder);
 			}
 			JsonArray endpointsConfig = apiConfig.getJsonArray("endpoints");
 			endpointsConfig.forEach((conf) -> {
@@ -74,13 +46,39 @@ public class ProxyRouter {
 			logger.info(String.format("API %s mapped successfully.", entry.getKey()));
 		});
 	}
-
-	public Route route(String url, String targetPath, Boolean appendPath, RequestForwarder forwarder) {
-		return route(url, targetPath, null, null, appendPath, forwarder);
-	}
-
-	public Route route(String url, String targetPath, RequestForwarder forwarder) {
-		return route(url, targetPath, null, null, Boolean.FALSE, forwarder);
-	}
 	
+	private Boolean mustBindApi(JsonObject json) {
+		return json != null && json.getBoolean("active");
+	}
+
+	private Route route(ProxyApiRoute route, RequestForwarder forwarder) {
+		String endpointPath = String.format("%s/*", route.getTargetPath());
+		logger.info(String.format("Routing all endpoints for %s to api %s", endpointPath, route.getUrl()));
+		return router.route(endpointPath).handler((context) -> {
+			TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, route.getUrl(), route.getTargetPath())
+					.appendPath(route.getAppendPath()).setTimeout(route.getTimeout())
+					.setPermission(route.getPermission()).build();
+			forwarder.forward(targetEndpoint, context.request(), context.response());
+		});
+	}
+
+	private Route route(ProxyEndpointRoute route, RequestForwarder forwarder) {
+		String pathFrom = route.getFromPath();
+		String urlTo = route.getUrlTo();
+		logger.info(
+			String.format(
+				"Routing endpoint with method %s and path %s to api %s method %s", 
+				route.getFromMethod(), 
+				pathFrom, 
+				urlTo, 
+				route.getToMethod()
+			)
+		);
+		return router.route(route.getFromMethod(), pathFrom).handler((context) -> {
+			TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, route.getUrlTo(), route.getToPath())
+					.setTimeout(route.getTimeout()).setPermission(route.getPermission()).setMethod(route.getToMethod())
+					.build();
+			forwarder.forward(targetEndpoint, context.request(), context.response());
+		});
+	}
 }

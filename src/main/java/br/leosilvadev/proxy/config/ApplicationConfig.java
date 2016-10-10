@@ -1,6 +1,14 @@
 package br.leosilvadev.proxy.config;
 
 public class ApplicationConfig {
+
+	public static final String PORT_JSON = "port";
+	public static final String ROUTES_PATH_JSON = "routes_path";
+
+	public static final String CACHING_HOST_JSON = "routes";
+	public static final String CACHING_PORT_JSON = "port";
+	public static final String CACHING_ENCODING_JSON = "encoding";
+	public static final String CACHING_AUTH_JSON = "auth";
 	
 	private Integer port;
 	private String routesPath;

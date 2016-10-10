@@ -75,8 +75,4 @@ public class ProxyEndpointRoute {
 		String permission = to.getString("permission");
 		return new ProxyEndpointRoute(url, fromMethod, fromPath, toMethod, toPath, timeout, permission);
 	}
-
-	public static ProxyEndpointRoute from(String url, JsonObject json) {
-		return from(url, json, null);
-	}
 }

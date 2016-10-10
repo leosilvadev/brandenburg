@@ -1,7 +1,7 @@
 package br.leosilvadev.proxy.forwarders;
 
 import br.leosilvadev.proxy.domains.TargetEndpoint;
-import br.leosilvadev.proxy.resolvers.ResponseErrorResolver;
+import br.leosilvadev.proxy.forwarders.resolvers.ResponseErrorResolver;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;

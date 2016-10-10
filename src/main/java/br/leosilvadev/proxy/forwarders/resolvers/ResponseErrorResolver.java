@@ -1,4 +1,4 @@
-package br.leosilvadev.proxy.resolvers;
+package br.leosilvadev.proxy.forwarders.resolvers;
 
 import java.util.HashMap;
 import java.util.Map;

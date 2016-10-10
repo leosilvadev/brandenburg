@@ -1,6 +1,6 @@
 {
 	"port": 8000,
-	"routesPath": "routes.json",
+	"routes_path": "routes.json",
 	"caching": {
 		"host": "localhost",
 		"port": 6379

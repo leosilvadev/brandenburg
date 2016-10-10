@@ -1,5 +1,7 @@
 package br.leosilvadev.proxy
 
+import br.leosilvadev.proxy.config.ApplicationConfig;
+import br.leosilvadev.proxy.server.verticles.ProxyVerticle;
 import io.vertx.core.DeploymentOptions
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpClient
@@ -7,7 +9,6 @@ import io.vertx.core.json.JsonObject
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.util.concurrent.AsyncConditions
-import br.leosilvadev.proxy.server.ProxyVerticle
 
 class IntegrationSpec extends Specification {
 
@@ -20,7 +21,7 @@ class IntegrationSpec extends Specification {
 	
 	def deployProxyVerticle(String routesPath) {
 		def conds = new AsyncConditions()
-		def options = new DeploymentOptions().setConfig(new JsonObject().put('routesPath', routesPath))
+		def options = new DeploymentOptions().setConfig(new JsonObject().put(ApplicationConfig.ROUTES_PATH_JSON, routesPath))
 		
 		client = vertx.createHttpClient()
 		vertx.deployVerticle(ProxyVerticle.name, options, {res ->
