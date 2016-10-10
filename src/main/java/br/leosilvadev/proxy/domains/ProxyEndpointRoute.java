@@ -65,13 +65,13 @@ public class ProxyEndpointRoute {
 	}
 	
 	public static ProxyEndpointRoute from(String url, JsonObject json, Long defaultTimeout) {
+		Long timeout = json.getLong("timeout", defaultTimeout);
 		JsonObject from = json.getJsonObject("from");
 		HttpMethod fromMethod = HttpMethod.valueOf(from.getString("method"));
 		String fromPath = from.getString("path");
 		JsonObject to = json.getJsonObject("to");
 		HttpMethod toMethod = to.getString("method") != null ? HttpMethod.valueOf(to.getString("method")) : fromMethod;
 		String toPath = to.getString("path");
-		Long timeout = to.getLong("timeout", defaultTimeout);
 		String permission = to.getString("permission");
 		return new ProxyEndpointRoute(url, fromMethod, fromPath, toMethod, toPath, timeout, permission);
 	}
