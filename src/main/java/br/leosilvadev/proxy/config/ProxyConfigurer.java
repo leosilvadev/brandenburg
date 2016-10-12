@@ -1,19 +1,16 @@
 package br.leosilvadev.proxy.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import br.leosilvadev.proxy.caching.Caching;
-import br.leosilvadev.proxy.server.verticles.ProxyVerticle;
+import br.leosilvadev.proxy.server.verticles.ProxyVerticleDeployer;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 
 @Configuration
 public class ProxyConfigurer {
-
-	@Autowired ProxyVerticle proxyVerticle;
 
 	@Bean
 	public ApplicationConfig applicationConfig() {
@@ -29,7 +26,7 @@ public class ProxyConfigurer {
 			jsonCaching.getString(ApplicationConfig.CACHING_AUTH_JSON)
 		);
 	}
-
+	
 	@Bean
 	public Vertx vertx() {
 		return Vertx.vertx();
@@ -38,5 +35,12 @@ public class ProxyConfigurer {
 	@Bean
 	public Caching caching() {
 		return new Caching(vertx()).config(applicationConfig());
+	}
+	
+	@Bean
+	public ProxyVerticleDeployer proxyVerticleDeployer() {
+		ProxyVerticleDeployer deployer = new ProxyVerticleDeployer();
+		deployer.deploy(vertx(), applicationConfig());
+		return deployer;
 	}
 }
