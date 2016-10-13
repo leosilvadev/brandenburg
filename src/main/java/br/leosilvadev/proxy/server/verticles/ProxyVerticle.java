@@ -17,7 +17,7 @@ public class ProxyVerticle extends AbstractVerticle {
 	public void start(Future<Void> future) throws Exception {
 		try {
 			JsonObject config = config();
-			Integer port = config.getInteger(ApplicationConfig.PORT_JSON, 8000);
+			Integer port = config.getInteger(ApplicationConfig.PORT_JSON, 8080);
 			String routesPath = config.getString(ApplicationConfig.ROUTES_PATH_JSON, ProxyServerConfig.DEFAULT_ROUTES_FILE);
 			new ProxyServer(vertx, new ProxyServerConfig(port, routesPath)).run();
 			future.complete();

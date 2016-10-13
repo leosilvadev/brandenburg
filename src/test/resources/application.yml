@@ -1,0 +1,5 @@
+server:
+  port: 8000
+proxy:
+  routes:
+    path: routes.json

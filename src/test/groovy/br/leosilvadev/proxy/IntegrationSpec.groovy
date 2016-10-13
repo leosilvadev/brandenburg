@@ -19,9 +19,12 @@ class IntegrationSpec extends Specification {
 		vertx = Vertx.vertx()
 	}
 	
-	def deployProxyVerticle(String routesPath) {
+	def deployProxyVerticle(Integer port, String routesPath) {
 		def conds = new AsyncConditions()
-		def options = new DeploymentOptions().setConfig(new JsonObject().put(ApplicationConfig.ROUTES_PATH_JSON, routesPath))
+		def json = new JsonObject()
+			.put(ApplicationConfig.ROUTES_PATH_JSON, routesPath)
+			.put(ApplicationConfig.PORT_JSON, port)
+		def options = new DeploymentOptions().setConfig(json)
 		
 		client = vertx.createHttpClient()
 		vertx.deployVerticle(ProxyVerticle.name, options, {res ->

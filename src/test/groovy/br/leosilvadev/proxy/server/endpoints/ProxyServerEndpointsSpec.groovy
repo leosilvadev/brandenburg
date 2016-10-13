@@ -16,7 +16,7 @@ import br.leosilvadev.proxy.server.ProxyServerFixture;
 class ProxyServerEndpointsSpec extends IntegrationSpec {
 	
 	def setupSpec() {
-		deployProxyVerticle('routes-endpoints.json')
+		deployProxyVerticle(8000, 'routes-endpoints.json')
 		
 		def conds = new AsyncConditions()
 		def server = ProxyServerFixture.buildServer vertx
