@@ -1,15 +1,23 @@
 package br.leosilvadev.proxy.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import br.leosilvadev.proxy.middlewares.Middleware;
 import br.leosilvadev.proxy.server.verticles.ProxyVerticleDeployer;
 import io.vertx.core.Vertx;
 
 @Configuration
 public class ProxyConfigurer {
 
+	@Autowired(required=false)
+	private List<Middleware> middlewares;
+	
 	@Value("${server.port}")
 	private Integer port;
 	
@@ -29,7 +37,7 @@ public class ProxyConfigurer {
 	@Bean
 	public ProxyVerticleDeployer proxyVerticleDeployer() {
 		ProxyVerticleDeployer deployer = new ProxyVerticleDeployer();
-		deployer.deploy(vertx(), applicationConfig());
+		deployer.deploy(vertx(), applicationConfig(), middlewares == null ? new ArrayList<>() : middlewares);
 		return deployer;
 	}
 }

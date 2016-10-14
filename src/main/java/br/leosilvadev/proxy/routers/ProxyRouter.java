@@ -1,11 +1,14 @@
 package br.leosilvadev.proxy.routers;
 
+import java.util.List;
+
 import br.leosilvadev.proxy.domains.ProxyApiRoute;
 import br.leosilvadev.proxy.domains.ProxyEndpointRoute;
 import br.leosilvadev.proxy.domains.TargetEndpoint;
 import br.leosilvadev.proxy.domains.TargetEndpoint.TargetEndpointBuilder;
 import br.leosilvadev.proxy.forwarders.ProxyRequestForwarder;
 import br.leosilvadev.proxy.forwarders.RequestForwarder;
+import br.leosilvadev.proxy.middlewares.Middleware;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -26,7 +29,11 @@ public class ProxyRouter {
 		this.router = router;
 	}
 
-	public void route(JsonObject routes) {
+	public void route(JsonObject routes, List<Middleware> middlewares) {
+		if (middlewares.isEmpty())
+			logger.warn("No middleware to register!");
+		middlewares.forEach(this::route);
+
 		ProxyRequestForwarder proxyForwarder = new ProxyRequestForwarder(vertx);
 		routes.forEach((entry) -> {
 			logger.info(String.format("Mapping API %s ...", entry.getKey()));
@@ -39,16 +46,29 @@ public class ProxyRouter {
 				route(ProxyApiRoute.from(url, bind, timeout, permission), proxyForwarder);
 			}
 			JsonArray endpointsConfig = apiConfig.getJsonArray("endpoints");
-			endpointsConfig.forEach((conf) -> {
+			endpointsConfig.forEach(conf -> {
 				JsonObject json = (JsonObject) conf;
 				route(ProxyEndpointRoute.from(url, json, timeout), proxyForwarder);
 			});
 			logger.info(String.format("API %s mapped successfully.", entry.getKey()));
 		});
 	}
-	
+
 	private Boolean mustBindApi(JsonObject json) {
 		return json != null && json.getBoolean("active");
+	}
+
+	private Route route(Middleware middleware) {
+		if (middleware.httpMethod() == null) {
+			if (middleware.path() == null) {
+				logger.info("Registering middleware for all the endpoints");
+				return router.route().handler(middleware);
+			}
+			logger.info(String.format("Registering middleware for %s", middleware.path()));
+			return router.route(middleware.path()).handler(middleware);
+		}
+		logger.info(String.format("Registering middleware for %s %s", middleware.httpMethod(), middleware.path()));
+		return router.route(middleware.httpMethod(), middleware.path()).handler(middleware);
 	}
 
 	private Route route(ProxyApiRoute route, RequestForwarder forwarder) {
@@ -65,15 +85,8 @@ public class ProxyRouter {
 	private Route route(ProxyEndpointRoute route, RequestForwarder forwarder) {
 		String pathFrom = route.getFromPath();
 		String urlTo = route.getUrlTo();
-		logger.info(
-			String.format(
-				"Routing endpoint with method %s and path %s to api %s method %s", 
-				route.getFromMethod(), 
-				pathFrom, 
-				urlTo, 
-				route.getToMethod()
-			)
-		);
+		logger.info(String.format("Routing endpoint with method %s and path %s to api %s method %s",
+				route.getFromMethod(), pathFrom, urlTo, route.getToMethod()));
 		return router.route(route.getFromMethod(), pathFrom).handler((context) -> {
 			TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, route.getUrlTo(), route.getToPath())
 					.setTimeout(route.getTimeout()).setPermission(route.getPermission()).setMethod(route.getToMethod())

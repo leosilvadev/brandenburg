@@ -1,5 +1,8 @@
 package br.leosilvadev.proxy.server;
 
+import java.util.List;
+
+import br.leosilvadev.proxy.middlewares.Middleware;
 import br.leosilvadev.proxy.readers.RoutesReader;
 import br.leosilvadev.proxy.routers.ProxyRouter;
 import io.vertx.core.AsyncResult;
@@ -27,11 +30,11 @@ public class ProxyServer {
 		this.router = Router.router(vertx);
 	}
 
-	public Future<ProxyServer> run() {
+	public Future<ProxyServer> run(List<Middleware> middlewares) {
 		Future<ProxyServer> future = Future.future();
 		logger.info(String.format("Reading Routes file from %s", config.getRoutesFilePath()));
 		new RoutesReader(vertx).read(config.getRoutesFilePath(), routes -> {
-			new ProxyRouter(vertx, router).route(routes);
+			new ProxyRouter(vertx, router).route(routes, middlewares);
 			return server.requestHandler(router::accept).listen(config.getPort(), onListening(future));
 		});
 		return future;
