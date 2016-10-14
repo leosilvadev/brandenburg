@@ -35,7 +35,7 @@ public class ProxyRouter {
 		middlewares.forEach(this::route);
 
 		ProxyRequestForwarder proxyForwarder = new ProxyRequestForwarder(vertx);
-		routes.forEach((entry) -> {
+		routes.forEach(entry -> {
 			logger.info(String.format("Mapping API %s ...", entry.getKey()));
 			JsonObject apiConfig = (JsonObject) entry.getValue();
 			String url = apiConfig.getString("url");
@@ -74,7 +74,7 @@ public class ProxyRouter {
 	private Route route(ProxyApiRoute route, RequestForwarder forwarder) {
 		String endpointPath = String.format("%s/*", route.getTargetPath());
 		logger.info(String.format("Routing all endpoints for %s to api %s", endpointPath, route.getUrl()));
-		return router.route(endpointPath).handler((context) -> {
+		return router.route(endpointPath).handler(context -> {
 			TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, route.getUrl(), route.getTargetPath())
 					.appendPath(route.getAppendPath()).setTimeout(route.getTimeout())
 					.setPermission(route.getPermission()).build();
@@ -87,7 +87,7 @@ public class ProxyRouter {
 		String urlTo = route.getUrlTo();
 		logger.info(String.format("Routing endpoint with method %s and path %s to api %s method %s",
 				route.getFromMethod(), pathFrom, urlTo, route.getToMethod()));
-		return router.route(route.getFromMethod(), pathFrom).handler((context) -> {
+		return router.route(route.getFromMethod(), pathFrom).handler(context -> {
 			TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, route.getUrlTo(), route.getToPath())
 					.setTimeout(route.getTimeout()).setPermission(route.getPermission()).setMethod(route.getToMethod())
 					.build();
