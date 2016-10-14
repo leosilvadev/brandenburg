@@ -1,7 +1,5 @@
 package br.leosilvadev.proxy.middlewares;
 
-import org.apache.http.HttpStatus;
-
 import br.leosilvadev.proxy.middlewares.data.Request;
 import br.leosilvadev.proxy.middlewares.exceptions.Violation;
 import io.vertx.core.Handler;
@@ -23,7 +21,7 @@ public abstract class Middleware implements Handler<RoutingContext> {
 			respondError(context, ex.getMessage(), ex.getStatus());
 			
 		} catch(Exception ex) {
-			respondError(context, ex.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR);
+			respondError(context, ex.getMessage(), 500);
 		}
 	}
 	

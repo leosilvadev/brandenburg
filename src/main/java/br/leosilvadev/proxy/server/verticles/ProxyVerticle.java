@@ -1,5 +1,6 @@
 package br.leosilvadev.proxy.server.verticles;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.leosilvadev.proxy.config.ApplicationConfig;
@@ -17,6 +18,10 @@ public class ProxyVerticle extends AbstractVerticle {
 	private static final Logger logger = LoggerFactory.getLogger(ProxyVerticle.class);
 
 	private final List<Middleware> middlewares;
+	
+	public ProxyVerticle() {
+		this.middlewares = new ArrayList<>();
+	}
 	
 	public ProxyVerticle(List<Middleware> middlewares) {
 		this.middlewares = middlewares;

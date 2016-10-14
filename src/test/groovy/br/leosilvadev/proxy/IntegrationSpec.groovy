@@ -28,6 +28,7 @@ class IntegrationSpec extends Specification {
 		
 		client = vertx.createHttpClient()
 		vertx.deployVerticle(ProxyVerticle.name, options, {res ->
+			if(res.failed()) res.cause().printStackTrace()
 			conds.evaluate { assert res.succeeded() }
 		})
 		conds.await 5
