@@ -10,7 +10,7 @@ plugins {
 }
 
 sourceCompatibility = 1.8
-version = '1.0'
+
 jar {
 	manifest {
 		attributes 'Implementation-Title': 'vertx-api-proxy',
