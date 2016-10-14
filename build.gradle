@@ -1,11 +1,12 @@
 plugins {
 	id 'java'
-	id 'groovy'
 	id 'application'
 	id 'eclipse'
 	id 'com.github.johnrengelman.shadow' version '1.2.3'
 	id 'jacoco'
-    id 'com.github.kt3k.coveralls' version '2.6.3'
+	id 'com.github.kt3k.coveralls' version '2.6.3'
+	id 'maven'
+	id 'signing'
 }
 
 sourceCompatibility = 1.8
@@ -29,7 +30,6 @@ repositories { mavenCentral() }
 dependencies {
 	compile 'io.vertx:vertx-web:3.3.+'
 	compile 'org.apache.logging.log4j:log4j-core:2.6.+'
-	compile 'org.codehaus.groovy:groovy-all:2.4.+'
 	compile 'org.springframework.boot:spring-boot-starter:1.4.+'
 
 	testCompile 'io.rest-assured:rest-assured:3.0.+'
@@ -40,6 +40,54 @@ dependencies {
 
 mainClassName = 'br.leosilvadev.proxy.ProxyApplication'
 
-shadowJar { classifier = 'fat' }
-
 task wrapper(type: Wrapper) { gradleVersion = '2.8' }
+
+task javadocJar(type: Jar) {
+	classifier = 'javadoc'
+	from javadoc
+}
+
+task sourcesJar(type: Jar) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+
+signing { sign configurations.archives }
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+				authentication(userName: ossrhUsername, password: ossrhPassword)
+			}
+
+			snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+				authentication(userName: ossrhUsername, password: ossrhPassword)
+			}
+
+			pom.project {
+				name 'Vert.x Api Proxy'
+				packaging 'jar'
+				description 'Api Proxy implemented with Vert.x, to run as a spring application'
+				url 'https://github.com/leosilvadev/vertx-api-proxy'
+
+				licenses {
+					license {
+						name 'The Apache License, Version 2.0'
+						url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+					}
+				}
+
+				developers {
+					developer {
+						id 'leosilvadev'
+						name 'Leonardo Silva'
+						email 'leosilvadev@gmail.com'
+					}
+				}
+			}
+		}
+	}
+}
