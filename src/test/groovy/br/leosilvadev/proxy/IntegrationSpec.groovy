@@ -31,7 +31,7 @@ class IntegrationSpec extends Specification {
 			if(res.failed()) res.cause().printStackTrace()
 			conds.evaluate { assert res.succeeded() }
 		})
-		conds.await 5
+		conds.await 3
 	}
 	
 	def cleanupSpec() {
