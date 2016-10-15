@@ -54,39 +54,41 @@ task sourcesJar(type: Jar) {
 
 artifacts { archives javadocJar, sourcesJar }
 
-signing { sign configurations.archives }
+if ( !System.env.CI ) {
+	signing { sign configurations.archives }
 
-uploadArchives {
-	repositories {
-		mavenDeployer {
-			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+	uploadArchives {
+		repositories {
+			mavenDeployer {
+				beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-				authentication(userName: ossrhUsername, password: ossrhPassword)
-			}
-
-			snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-				authentication(userName: ossrhUsername, password: ossrhPassword)
-			}
-
-			pom.project {
-				name 'Vert.x Api Proxy'
-				packaging 'jar'
-				description 'Api Proxy implemented with Vert.x, to run as a spring application'
-				url 'https://github.com/leosilvadev/vertx-api-proxy'
-
-				licenses {
-					license {
-						name 'The Apache License, Version 2.0'
-						url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-					}
+				repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+					authentication(userName: ossrhUsername, password: ossrhPassword)
 				}
 
-				developers {
-					developer {
-						id 'leosilvadev'
-						name 'Leonardo Silva'
-						email 'leosilvadev@gmail.com'
+				snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+					authentication(userName: ossrhUsername, password: ossrhPassword)
+				}
+
+				pom.project {
+					name 'Vert.x Api Proxy'
+					packaging 'jar'
+					description 'Api Proxy implemented with Vert.x, to run as a spring application'
+					url 'https://github.com/leosilvadev/vertx-api-proxy'
+
+					licenses {
+						license {
+							name 'The Apache License, Version 2.0'
+							url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+						}
+					}
+
+					developers {
+						developer {
+							id 'leosilvadev'
+							name 'Leonardo Silva'
+							email 'leosilvadev@gmail.com'
+						}
 					}
 				}
 			}
