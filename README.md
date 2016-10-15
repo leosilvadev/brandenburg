@@ -2,13 +2,12 @@
 Implement a lightweight and simple API Proxy with Vert.x
 
 ### Goals
-- [ ] Caching Mechanism
-- [ ] Authorization Mechanism
+- [x] Embedded as Spring App
+- [x] Middleware Mechanism
 - [x] Flexible way to bind all endpoints from an API to the Proxy
 - [x] Flexible way to bind only specifics endpoints to the Proxy
-- [ ] Distributed Configuration based on Github
 - [x] Tests coverage
-- [ ] How To Documentation
+- [ ] How-To Documentation
 - [ ] Benchmarks using some cool tool such as [loader.io](http://loader.io)
 
 
