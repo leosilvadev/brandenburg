@@ -13,7 +13,7 @@ sourceCompatibility = 1.8
 
 jar {
 	manifest {
-		attributes 'Implementation-Title': 'vertx-api-proxy',
+		attributes 'Implementation-Title': 'brandenburg',
 		'Implementation-Version': version
 	}
 }
@@ -51,6 +51,8 @@ task sourcesJar(type: Jar) {
 	classifier = 'sources'
 	from sourceSets.main.allSource
 }
+
+artifacts { archives javadocJar, sourcesJar }
 
 signing { sign configurations.archives }
 
