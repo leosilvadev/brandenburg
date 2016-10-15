@@ -4,4 +4,4 @@ jdk:
 - oraclejdk8
 
 after_success:
-- ./gradlew jacocoTestReport coveralls
+- ./gradlew --rerun-tasks test jacocoTestReport coveralls
