@@ -1,4 +1,4 @@
-# Brandenburg - API Proxy [![Build Status](https://travis-ci.org/leosilvadev/brandenburg.svg?branch=master)](https://travis-ci.org/leosilvadev/brandenburg) [![Coverage Status](https://coveralls.io/repos/github/leosilvadev/brandenburg/badge.svg?branch=master)](https://coveralls.io/github/leosilvadev/brandenburg?branch=master)
+# Brandenburg - API Proxy [![Released Version](https://img.shields.io/badge/Version-Released-blue.svg)](https://oss.sonatype.org/content/groups/public/com/github/leosilvadev/brandenburg/) [![Build Status](https://travis-ci.org/leosilvadev/brandenburg.svg?branch=master)](https://travis-ci.org/leosilvadev/brandenburg) [![Coverage Status](https://coveralls.io/repos/github/leosilvadev/brandenburg/badge.svg?branch=master)](https://coveralls.io/github/leosilvadev/brandenburg?branch=master)
 Implement a lightweight and simple API Proxy with Vert.x
 
 ### Goals
