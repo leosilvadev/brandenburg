@@ -38,7 +38,7 @@ dependencies {
 	testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }
 
-mainClassName = 'br.leosilvadev.proxy.ProxyApplication'
+mainClassName = 'com.github.leosilvadev.proxy.ProxyApplication'
 
 task wrapper(type: Wrapper) { gradleVersion = '2.8' }
 
