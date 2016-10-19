@@ -19,6 +19,11 @@
 				"method":"POST",
 				"path":"/users"
 			}
+		}, {
+			"from": {
+				"method":"POST",
+				"path":"/users"
+			}
 		}]
 	}
 }

@@ -42,10 +42,9 @@ public class ProxyRouter {
 			JsonObject apiConfig = (JsonObject) entry.getValue();
 			String url = apiConfig.getString("url");
 			Long timeout = apiConfig.getLong("timeout");
-			String permission = apiConfig.getString("permission");
 			JsonObject bind = apiConfig.getJsonObject("bind");
 			if (mustBindApi(bind)) {
-				route(ProxyApiRoute.from(url, bind, timeout, permission), proxyForwarder);
+				route(ProxyApiRoute.from(url, bind, timeout), proxyForwarder);
 			}
 			JsonArray endpointsConfig = apiConfig.getJsonArray("endpoints");
 			endpointsConfig.forEach(conf -> {
@@ -78,8 +77,9 @@ public class ProxyRouter {
 		logger.info(String.format("Routing all endpoints for %s to api %s", endpointPath, route.getUrl()));
 		return router.route(endpointPath).handler(context -> {
 			TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, route.getUrl(), route.getTargetPath())
-					.appendPath(route.getAppendPath()).setTimeout(route.getTimeout())
-					.setPermission(route.getPermission()).build();
+					.appendPath(route.getAppendPath())
+					.setTimeout(route.getTimeout())
+					.build();
 			forwarder.forward(targetEndpoint, context.request(), context.response());
 		});
 	}
@@ -91,7 +91,8 @@ public class ProxyRouter {
 				route.getFromMethod(), pathFrom, urlTo, route.getToMethod()));
 		return router.route(route.getFromMethod(), pathFrom).handler(context -> {
 			TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, route.getUrlTo(), route.getToPath())
-					.setTimeout(route.getTimeout()).setPermission(route.getPermission()).setMethod(route.getToMethod())
+					.setTimeout(route.getTimeout())
+					.setMethod(route.getToMethod())
 					.build();
 			forwarder.forward(targetEndpoint, context.request(), context.response());
 		});

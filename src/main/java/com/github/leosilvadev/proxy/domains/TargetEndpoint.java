@@ -10,13 +10,11 @@ public class TargetEndpoint {
 	private String url;
 	private String path;
 	private Long timeout;
-	private String permission;
 
-	public TargetEndpoint(HttpMethod method, String url, String path, String permission, Long timeout) {
+	public TargetEndpoint(HttpMethod method, String url, String path, Long timeout) {
 		this.method = method;
 		this.url = url;
 		this.path = path;
-		this.permission = permission;
 		this.timeout = timeout;
 	}
 
@@ -40,10 +38,6 @@ public class TargetEndpoint {
 		return timeout != null;
 	}
 
-	public String getPermission() {
-		return permission;
-	}
-
 	public static class TargetEndpointBuilder {
 
 		private RoutingContext context;
@@ -51,7 +45,6 @@ public class TargetEndpoint {
 		private String url;
 		private String path;
 		private Long timeout;
-		private String permission;
 		private Boolean appendPath;
 
 		public TargetEndpointBuilder(RoutingContext context, String url, String path) {
@@ -63,11 +56,6 @@ public class TargetEndpoint {
 
 		public TargetEndpointBuilder setTimeout(Long timeout) {
 			this.timeout = timeout;
-			return this;
-		}
-
-		public TargetEndpointBuilder setPermission(String permission) {
-			this.permission = permission;
 			return this;
 		}
 
@@ -86,7 +74,7 @@ public class TargetEndpoint {
 			String targetPath = appendPath ? request.path() : request.path().replace(path, "");
 			String targetUrl = url + targetPath;
 			method = method == null ? request.method() : method;
-			return new TargetEndpoint(method, targetUrl, targetPath, permission, timeout);
+			return new TargetEndpoint(method, targetUrl, targetPath, timeout);
 		}
 
 	}
