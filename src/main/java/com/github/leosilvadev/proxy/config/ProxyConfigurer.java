@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.github.leosilvadev.proxy.middlewares.Middleware;
+import com.github.leosilvadev.proxy.middlewares.AbstractMiddleware;
 import com.github.leosilvadev.proxy.server.verticles.ProxyVerticleDeployer;
 
 import io.vertx.core.Vertx;
@@ -17,7 +17,7 @@ import io.vertx.core.Vertx;
 public class ProxyConfigurer {
 
 	@Autowired(required=false)
-	private List<Middleware> middlewares;
+	private List<AbstractMiddleware> middlewares;
 	
 	@Value("${server.port}")
 	private Integer port;

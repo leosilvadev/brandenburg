@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.leosilvadev.proxy.config.ApplicationConfig;
-import com.github.leosilvadev.proxy.middlewares.Middleware;
+import com.github.leosilvadev.proxy.middlewares.AbstractMiddleware;
 import com.github.leosilvadev.proxy.server.ProxyServer;
 import com.github.leosilvadev.proxy.server.ProxyServerConfig;
 
@@ -18,13 +18,13 @@ public class ProxyVerticle extends AbstractVerticle {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProxyVerticle.class);
 
-	private final List<Middleware> middlewares;
+	private final List<AbstractMiddleware> middlewares;
 	
 	public ProxyVerticle() {
 		this.middlewares = new ArrayList<>();
 	}
 	
-	public ProxyVerticle(List<Middleware> middlewares) {
+	public ProxyVerticle(List<AbstractMiddleware> middlewares) {
 		this.middlewares = middlewares;
 	}
 	

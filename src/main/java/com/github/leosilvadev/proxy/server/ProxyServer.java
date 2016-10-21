@@ -2,7 +2,7 @@ package com.github.leosilvadev.proxy.server;
 
 import java.util.List;
 
-import com.github.leosilvadev.proxy.middlewares.Middleware;
+import com.github.leosilvadev.proxy.middlewares.AbstractMiddleware;
 import com.github.leosilvadev.proxy.readers.RoutesReader;
 import com.github.leosilvadev.proxy.routers.ProxyRouter;
 
@@ -31,7 +31,7 @@ public class ProxyServer {
 		this.router = Router.router(vertx);
 	}
 
-	public Future<ProxyServer> run(List<Middleware> middlewares) {
+	public Future<ProxyServer> run(List<AbstractMiddleware> middlewares) {
 		Future<ProxyServer> future = Future.future();
 		logger.info("Reading Routes file from {0}", config.getRoutesFilePath());
 		new RoutesReader(vertx).read(config.getRoutesFilePath(), routes -> {

@@ -1,25 +1,21 @@
 package com.github.leosilvadev.proxy.middlewares;
 
-import com.github.leosilvadev.proxy.utils.Response;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import io.vertx.core.Handler;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-import io.vertx.ext.web.RoutingContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public abstract class Middleware implements Handler<RoutingContext> {
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Autowired
+@Component
+public @interface Middleware {
 
-	protected static final Logger logger = LoggerFactory.getLogger(Middleware.class);
-	
-	public abstract void handleRequest(RoutingContext context);
-	
-	@Override
-	public void handle(RoutingContext context) {
-		try {
-			handleRequest(context);
-		} catch(Exception ex) {
-			logger.error(ex.getMessage(), ex);
-			Response.internalServerError(context);
-		}
-	}
+	String value() default "";
+
 }

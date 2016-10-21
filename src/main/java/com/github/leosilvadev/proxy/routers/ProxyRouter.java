@@ -8,8 +8,8 @@ import com.github.leosilvadev.proxy.domains.TargetEndpoint;
 import com.github.leosilvadev.proxy.domains.TargetEndpoint.TargetEndpointBuilder;
 import com.github.leosilvadev.proxy.forwarders.ProxyRequestForwarder;
 import com.github.leosilvadev.proxy.forwarders.RequestForwarder;
+import com.github.leosilvadev.proxy.middlewares.AbstractMiddleware;
 import com.github.leosilvadev.proxy.middlewares.Middleware;
-import com.github.leosilvadev.proxy.middlewares.MiddlewareMapping;
 
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
@@ -33,7 +33,7 @@ public class ProxyRouter {
 		this.router = router;
 	}
 
-	public void route(JsonObject routes, List<Middleware> middlewares) {
+	public void route(JsonObject routes, List<AbstractMiddleware> middlewares) {
 		if (middlewares.isEmpty())
 			logger.warn("No middleware to register!");
 		middlewares.forEach(this::route);
@@ -79,8 +79,8 @@ public class ProxyRouter {
 		return json != null && json.getBoolean("active");
 	}
 
-	private Route route(Middleware middleware) {
-		MiddlewareMapping mapping = middleware.getClass().getAnnotation(MiddlewareMapping.class);
+	private Route route(AbstractMiddleware middleware) {
+		Middleware mapping = middleware.getClass().getAnnotation(Middleware.class);
 		String path = mapping.value();
 		if (path == null || path.isEmpty()) {
 			logger.info("Registering middleware for all the endpoints");
