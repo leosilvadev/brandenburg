@@ -43,20 +43,38 @@ public class ProxyRouter {
 			logger.info("Mapping API {0} ...", entry.getKey());
 			JsonObject apiConfig = (JsonObject) entry.getValue();
 			String url = apiConfig.getString("url");
+			
+			if (url==null) {
+				IllegalArgumentException ex = new IllegalArgumentException("API requires an URL");
+				logger.fatal(ex.getMessage(), ex);
+				throw ex;
+			}
+			
 			Long timeout = apiConfig.getLong("timeout");
 			JsonObject bind = apiConfig.getJsonObject("bind");
+			JsonArray endpointsConfig = apiConfig.getJsonArray("endpoints");
 			if (mustBindApi(bind)) {
 				route(ProxyApiRoute.from(url, bind, timeout), proxyForwarder);
+				
+			} else if(hasEndpoints(endpointsConfig)) {
+				endpointsConfig.forEach(conf -> {
+					JsonObject json = (JsonObject) conf;
+					route(ProxyEndpointRoute.from(url, json, timeout), proxyForwarder);
+				});
+				
+			} else {
+				IllegalArgumentException ex = new IllegalArgumentException("You must configure the API with either bind or specific endpoints");
+				logger.fatal(ex.getMessage(), ex);
+				throw ex;
 			}
-			JsonArray endpointsConfig = apiConfig.getJsonArray("endpoints");
-			endpointsConfig.forEach(conf -> {
-				JsonObject json = (JsonObject) conf;
-				route(ProxyEndpointRoute.from(url, json, timeout), proxyForwarder);
-			});
 			logger.info("API {0} mapped successfully.", entry.getKey());
 		});
 	}
 
+	private Boolean hasEndpoints(JsonArray endpointsConfig) {
+		return endpointsConfig != null && endpointsConfig.size() > 0;
+	}
+	
 	private Boolean mustBindApi(JsonObject json) {
 		return json != null && json.getBoolean("active");
 	}
