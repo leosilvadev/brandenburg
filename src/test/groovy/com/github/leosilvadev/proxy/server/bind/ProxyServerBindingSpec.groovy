@@ -16,11 +16,11 @@ import com.github.leosilvadev.proxy.server.ProxyServerFixture
 class ProxyServerBindingSpec extends IntegrationSpec {
 
 	def setupSpec() {
-		deployProxyVerticle(8000, 'routes-bind.json')
+		deployProxyVerticle(8001, 'routes-bind.json')
 
 		def conds = new AsyncConditions()
 		def server = ProxyServerFixture.buildServer vertx
-		server.listen(9000) { res ->
+		server.listen(9001) { res ->
 			conds.evaluate { assert res.succeeded() }
 		}
 		conds.await 5
