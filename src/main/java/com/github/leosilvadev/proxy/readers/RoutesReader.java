@@ -27,7 +27,7 @@ public class RoutesReader {
 		vertx.fileSystem().readFile(path, (fileResult) -> {
 			Buffer buffer = fileResult.result();
 			if (buffer == null) {
-				logger.error(String.format("Routes File %s not found!", path), path);
+				logger.error("Routes File {0} not found!", path);
 
 			} else {
 				callback.apply(buffer.toJsonObject());

@@ -10,6 +10,7 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.logging.Logger;
@@ -28,13 +29,14 @@ public class ProxyRequestForwarder implements RequestForwarder {
 	@Override
 	public void forward(TargetEndpoint endpoint, HttpServerRequest cliRequest, HttpServerResponse cliResponse) {
 		HttpClient client = vertx.createHttpClient();
-		logger.info(String.format("Requesting %s to %s", endpoint.getMethod(), endpoint.getUrl()));
-		HttpClientRequest request = buildRequest(endpoint, cliResponse, client);
+		logger.info("Requesting {0} to {1}", endpoint.getMethod(), endpoint.getUrl());
+		HttpClientRequest request = buildRequest(endpoint, cliRequest, cliResponse, client);
 		cliRequest.bodyHandler(fillRequestAndSend(request, cliRequest.headers()));
 	}
 
-	private HttpClientRequest buildRequest(TargetEndpoint endpoint, HttpServerResponse cliResponse, HttpClient client) {
-		HttpClientRequest request = client.requestAbs(endpoint.getMethod(), endpoint.getUrl(), handleResponse(cliResponse))
+	private HttpClientRequest buildRequest(TargetEndpoint endpoint, HttpServerRequest cliRequest, HttpServerResponse cliResponse, HttpClient client) {
+		HttpMethod method = endpoint.getMethod() == null ? cliRequest.method() : endpoint.getMethod();
+		HttpClientRequest request = client.requestAbs(method, endpoint.getUrl(), handleResponse(cliResponse))
 				.exceptionHandler(handleException(cliResponse));
 		
 		if (endpoint.hasTimeout()) request.setTimeout(endpoint.getTimeout());

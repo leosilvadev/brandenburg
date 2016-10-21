@@ -39,6 +39,10 @@ public class ProxyEndpointRoute {
 		return fromMethod;
 	}
 
+	public Boolean isThereFromMethod() {
+		return fromMethod!=null;
+	}
+
 	public String getFromPath() {
 		return pathOf(fromPath);
 	}
@@ -63,7 +67,8 @@ public class ProxyEndpointRoute {
 		Long timeout = json.getLong("timeout", defaultTimeout);
 
 		JsonObject from = json.getJsonObject("from");
-		HttpMethod fromMethod = HttpMethod.valueOf(from.getString("method"));
+		String methodStr = from.getString("method");
+		HttpMethod fromMethod = methodStr == null ? null : HttpMethod.valueOf(methodStr);
 		String fromPath = from.getString("path");
 
 		JsonObject to = json.getJsonObject("to") == null ? from : json.getJsonObject("to");

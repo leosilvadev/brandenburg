@@ -9,8 +9,9 @@ import com.github.leosilvadev.proxy.domains.TargetEndpoint.TargetEndpointBuilder
 import com.github.leosilvadev.proxy.forwarders.ProxyRequestForwarder;
 import com.github.leosilvadev.proxy.forwarders.RequestForwarder;
 import com.github.leosilvadev.proxy.middlewares.Middleware;
-import com.github.leosilvadev.proxy.routers.ProxyRouter;
+import com.github.leosilvadev.proxy.middlewares.MiddlewareMapping;
 
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -18,6 +19,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
 
 public class ProxyRouter {
 
@@ -38,7 +40,7 @@ public class ProxyRouter {
 
 		ProxyRequestForwarder proxyForwarder = new ProxyRequestForwarder(vertx);
 		routes.forEach(entry -> {
-			logger.info(String.format("Mapping API %s ...", entry.getKey()));
+			logger.info("Mapping API {0} ...", entry.getKey());
 			JsonObject apiConfig = (JsonObject) entry.getValue();
 			String url = apiConfig.getString("url");
 			Long timeout = apiConfig.getLong("timeout");
@@ -51,7 +53,7 @@ public class ProxyRouter {
 				JsonObject json = (JsonObject) conf;
 				route(ProxyEndpointRoute.from(url, json, timeout), proxyForwarder);
 			});
-			logger.info(String.format("API %s mapped successfully.", entry.getKey()));
+			logger.info("API {0} mapped successfully.", entry.getKey());
 		});
 	}
 
@@ -60,26 +62,22 @@ public class ProxyRouter {
 	}
 
 	private Route route(Middleware middleware) {
-		if (middleware.httpMethod() == null) {
-			if (middleware.path() == null) {
-				logger.info("Registering middleware for all the endpoints");
-				return router.route().handler(middleware);
-			}
-			logger.info(String.format("Registering middleware for %s", middleware.path()));
-			return router.route(middleware.path()).handler(middleware);
+		MiddlewareMapping mapping = middleware.getClass().getAnnotation(MiddlewareMapping.class);
+		String path = mapping.value();
+		if (path == null || path.isEmpty()) {
+			logger.info("Registering middleware for all the endpoints");
+			return router.route().handler(middleware);
 		}
-		logger.info(String.format("Registering middleware for %s %s", middleware.httpMethod(), middleware.path()));
-		return router.route(middleware.httpMethod(), middleware.path()).handler(middleware);
+		logger.info("Registering middleware for {0}", path);
+		return router.route(path).handler(middleware);
 	}
 
 	private Route route(ProxyApiRoute route, RequestForwarder forwarder) {
 		String endpointPath = String.format("%s/*", route.getTargetPath());
-		logger.info(String.format("Routing all endpoints for %s to api %s", endpointPath, route.getUrl()));
+		logger.info("Routing all endpoints for {0} to api {1}", endpointPath, route.getUrl());
 		return router.route(endpointPath).handler(context -> {
 			TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, route.getUrl(), route.getTargetPath())
-					.appendPath(route.getAppendPath())
-					.setTimeout(route.getTimeout())
-					.build();
+					.appendPath(route.getAppendPath()).setTimeout(route.getTimeout()).build();
 			forwarder.forward(targetEndpoint, context.request(), context.response());
 		});
 	}
@@ -87,14 +85,17 @@ public class ProxyRouter {
 	private Route route(ProxyEndpointRoute route, RequestForwarder forwarder) {
 		String pathFrom = route.getFromPath();
 		String urlTo = route.getUrlTo();
-		logger.info(String.format("Routing endpoint with method %s and path %s to api %s method %s",
-				route.getFromMethod(), pathFrom, urlTo, route.getToMethod()));
-		return router.route(route.getFromMethod(), pathFrom).handler(context -> {
+		logger.info("Routing endpoint with method {0} and path {1} to api {2} method {3}", route.getFromMethod(), pathFrom, urlTo, route.getToMethod());
+		Handler<RoutingContext> handler = (context) -> {
 			TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, route.getUrlTo(), route.getToPath())
-					.setTimeout(route.getTimeout())
-					.setMethod(route.getToMethod())
-					.build();
+					.setTimeout(route.getTimeout()).setMethod(route.getToMethod()).build();
 			forwarder.forward(targetEndpoint, context.request(), context.response());
-		});
+		};
+
+		if (route.isThereFromMethod()) {
+			return router.route(route.getFromMethod(), pathFrom).handler(handler);
+		} else {
+			return router.route(pathFrom).handler(handler);
+		}
 	}
 }
