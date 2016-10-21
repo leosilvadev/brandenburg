@@ -31,7 +31,7 @@ class ProxyServerBindingSpec extends IntegrationSpec {
 		def request = given().accept(ContentType.JSON)
 
 		when:
-		def response = request.get('http://localhost:8000/users')
+		def response = request.get('http://localhost:8001/users')
 
 		then:
 		response.statusCode() == HttpStatus.SC_OK
@@ -49,7 +49,7 @@ class ProxyServerBindingSpec extends IntegrationSpec {
 		def request = given().contentType(ContentType.JSON).accept(ContentType.JSON).body(JsonOutput.toJson(user))
 
 		when:
-		def response = request.post('http://localhost:8000/users')
+		def response = request.post('http://localhost:8001/users')
 
 		then:
 		response.statusCode() == HttpStatus.SC_CREATED
@@ -66,7 +66,7 @@ class ProxyServerBindingSpec extends IntegrationSpec {
 		def request = given().accept(ContentType.JSON)
 
 		when:
-		def response = request.get('http://localhost:8000/users/timeout')
+		def response = request.get('http://localhost:8001/users/timeout')
 
 		then:
 		response.statusCode() == HttpStatus.SC_GATEWAY_TIMEOUT
@@ -77,7 +77,7 @@ class ProxyServerBindingSpec extends IntegrationSpec {
 		def request = given().accept(ContentType.JSON)
 
 		when:
-		def response = request.get('http://localhost:8000/users/badRequest')
+		def response = request.get('http://localhost:8001/users/badRequest')
 
 		then:
 		response.statusCode() == HttpStatus.SC_BAD_REQUEST
@@ -92,7 +92,7 @@ class ProxyServerBindingSpec extends IntegrationSpec {
 		def request = given().accept(ContentType.XML)
 
 		when:
-		def response = request.get('http://localhost:8000/users/xml')
+		def response = request.get('http://localhost:8001/users/xml')
 
 		then:
 		response.statusCode() == 200

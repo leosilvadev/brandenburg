@@ -33,7 +33,7 @@ class ProxyServerEndpointsSpec extends IntegrationSpec {
 		def request = given().accept(ContentType.JSON)
 
 		when:
-		def response = request.get('http://localhost:8000/users')
+		def response = request.get('http://localhost:8002/users')
 
 		then:
 		response.statusCode() == 200
@@ -51,7 +51,7 @@ class ProxyServerEndpointsSpec extends IntegrationSpec {
 		def request = given().contentType(ContentType.JSON).accept(ContentType.JSON).body(JsonOutput.toJson(user))
 
 		when:
-		def response = request.put('http://localhost:8000/users')
+		def response = request.put('http://localhost:8002/users')
 
 		then:
 		response.statusCode() == 201
@@ -69,7 +69,7 @@ class ProxyServerEndpointsSpec extends IntegrationSpec {
 		def request = given().contentType(ContentType.JSON).accept(ContentType.JSON).body(JsonOutput.toJson(user))
 
 		when:
-		def response = request.post('http://localhost:8000/users')
+		def response = request.post('http://localhost:8002/users')
 
 		then:
 		response.statusCode() == 201

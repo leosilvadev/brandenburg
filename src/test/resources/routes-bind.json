@@ -1,6 +1,6 @@
 {
 	"books-api": {
-		"url": "http://localhost:9000",
+		"url": "http://localhost:9001",
 		"timeout": 500,
 		"bind": {
 			"active": true,

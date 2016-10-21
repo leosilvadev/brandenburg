@@ -1,6 +1,6 @@
 {
 	"books-api": {
-		"url": "http://localhost:9000",
+		"url": "http://localhost:9002",
 		"endpoints": [{
 			"from": {
 				"method":"GET",
