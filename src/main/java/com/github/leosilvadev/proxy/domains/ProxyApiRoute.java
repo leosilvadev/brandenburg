@@ -35,7 +35,11 @@ public class ProxyApiRoute {
 
 	public static ProxyApiRoute from(String url, JsonObject json, Long timeout) {
 		String path = json.getString("path");
+		
+		if (path==null || path.isEmpty()) 
+			throw new IllegalArgumentException("Api Routing must have a path to map");
+		
 		Boolean appendPath = json.getBoolean("append_path");
-		return new ProxyApiRoute(url, path, timeout, appendPath);
+		return new ProxyApiRoute(url, path, timeout, appendPath == null ? Boolean.TRUE : appendPath);
 	}
 }

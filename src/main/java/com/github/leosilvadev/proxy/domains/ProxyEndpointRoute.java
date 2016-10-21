@@ -67,11 +67,18 @@ public class ProxyEndpointRoute {
 		Long timeout = json.getLong("timeout", defaultTimeout);
 
 		JsonObject from = json.getJsonObject("from");
+		
+		if (from==null)
+			throw new IllegalArgumentException("Api Endpoint required a 'from' mapping");
+		
 		String methodStr = from.getString("method");
 		HttpMethod fromMethod = methodStr == null ? null : HttpMethod.valueOf(methodStr);
 		String fromPath = from.getString("path");
 
-		JsonObject to = json.getJsonObject("to") == null ? from : json.getJsonObject("to");
+		if (fromPath==null || fromPath.isEmpty())
+			throw new IllegalArgumentException("Api Endpoint required a path mapping");
+		
+		JsonObject to = json.getJsonObject("to") == null ? from : json.getJsonObject("to");		
 		HttpMethod toMethod = to.getString("method") == null ? fromMethod : HttpMethod.valueOf(to.getString("method"));
 		String toPath = to.getString("path") == null ? fromPath : to.getString("path");
 

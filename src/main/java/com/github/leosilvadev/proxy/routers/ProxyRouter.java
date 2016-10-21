@@ -44,7 +44,7 @@ public class ProxyRouter {
 			JsonObject apiConfig = (JsonObject) entry.getValue();
 			String url = apiConfig.getString("url");
 			
-			if (url==null) {
+			if (url==null || url.isEmpty()) {
 				IllegalArgumentException ex = new IllegalArgumentException("API requires an URL");
 				logger.fatal(ex.getMessage(), ex);
 				throw ex;
