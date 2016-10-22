@@ -8,7 +8,7 @@ Brandenburg is a lightweight and simple API Proxy implementation. It is built ov
 - [x] Define Timeouts at API or Endpoint level
 - [x] Implement your own middlewares to intercept, validate or do whatever you want with the given requests
 
-### [How to use - Documentation](https://github.com/leosilvadev/brandenburg/wiki/How-to-use)
+### [How to use - Documentation](https://github.com/leosilvadev/brandenburg/wiki)
 
 ### How to contribute?
 - Fork it
