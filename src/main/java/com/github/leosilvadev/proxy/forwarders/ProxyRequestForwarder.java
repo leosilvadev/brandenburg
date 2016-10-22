@@ -1,5 +1,7 @@
 package com.github.leosilvadev.proxy.forwarders;
 
+import java.util.Map.Entry;
+
 import com.github.leosilvadev.proxy.domains.TargetEndpoint;
 import com.github.leosilvadev.proxy.forwarders.resolvers.ResponseErrorResolver;
 
@@ -29,19 +31,39 @@ public class ProxyRequestForwarder implements RequestForwarder {
 	@Override
 	public void forward(TargetEndpoint endpoint, HttpServerRequest cliRequest, HttpServerResponse cliResponse) {
 		HttpClient client = vertx.createHttpClient();
-		logger.info("Requesting {0} to {1}", endpoint.getMethod(), endpoint.getUrl());
+		String targetUrl = endpoint.getUrl() + queryParams(cliRequest);
+		logger.info("Requesting {0} to {1}", endpoint.getMethod(), targetUrl);
 		HttpClientRequest request = buildRequest(endpoint, cliRequest, cliResponse, client);
 		cliRequest.bodyHandler(fillRequestAndSend(request, cliRequest.headers()));
 	}
 
 	private HttpClientRequest buildRequest(TargetEndpoint endpoint, HttpServerRequest cliRequest, HttpServerResponse cliResponse, HttpClient client) {
 		HttpMethod method = endpoint.getMethod() == null ? cliRequest.method() : endpoint.getMethod();
-		HttpClientRequest request = client.requestAbs(method, endpoint.getUrl(), handleResponse(cliResponse))
+		String targetUrl = endpoint.getUrl() + queryParams(cliRequest);
+		HttpClientRequest request = client.requestAbs(method, targetUrl, handleResponse(cliResponse))
 				.exceptionHandler(handleException(cliResponse));
 		
 		if (endpoint.hasTimeout()) request.setTimeout(endpoint.getTimeout());
 		
 		return request;
+	}
+
+	private String queryParams(HttpServerRequest cliRequest) {
+		Boolean firstParameter = true;
+		StringBuilder builder = new StringBuilder();
+
+		for (Entry<String, String> entry : cliRequest.params()) {
+			if (firstParameter) {
+				builder.append("?");
+				firstParameter = false;
+			} else {
+				builder.append("&");
+			}
+			builder.append(entry.getKey());
+			builder.append("=");
+			builder.append(entry.getValue());
+		}
+		return builder.toString();
 	}
 
 	private Handler<HttpClientResponse> handleResponse(HttpServerResponse cliResponse) {

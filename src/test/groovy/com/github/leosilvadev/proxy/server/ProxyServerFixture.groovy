@@ -29,6 +29,15 @@ class ProxyServerFixture {
 					.putHeader('content-type', 'application/json')
 					.end(users)
 		}
+		router.get('/users/params').handler { RoutingContext context ->
+			def params = context.request().params()
+			def result = JsonOutput.toJson([param1: params.param1, param2: params.param2])
+			context.response()
+					.setChunked(true)
+					.setStatusCode(200)
+					.putHeader('content-type', 'application/json')
+					.end(result)
+		}
 		router.get('/users/xml').handler { RoutingContext context ->
 			def users = '''
 				<users>

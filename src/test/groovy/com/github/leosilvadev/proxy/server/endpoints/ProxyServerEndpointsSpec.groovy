@@ -45,6 +45,25 @@ class ProxyServerEndpointsSpec extends IntegrationSpec {
 		response.header('application') == 'vertx-proxy'
 	}
 
+	def 'Should forward a GET request to /users/params with query parameters'() {
+		given:
+		def request = given().accept(ContentType.JSON)
+
+		when:
+		def response = request.get('http://localhost:8001/users/params?param1=1&param2=2')
+
+		then:
+		response.statusCode() == HttpStatus.SC_OK
+
+		and:
+		response.contentType() == 'application/json'
+
+		and:
+		def json = Json.decodeValue(response.body().asString(), Map)
+		json.param1 == '1'
+		json.param2 == '2'
+	}
+
 	def 'Should forward a PUT request to /users'() {
 		given:
 		def user = [name: 'leonardo']
