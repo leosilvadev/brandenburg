@@ -10,6 +10,11 @@
 				"method":"GET",
 				"path":"/users"
 			}
+		},{
+			"from": {
+				"method":"GET",
+				"path":"/users/params"
+			}
 		}, {
 			"from": {
 				"method":"PUT",

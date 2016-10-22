@@ -6,9 +6,6 @@ import static org.hamcrest.Matchers.*
 import groovy.json.JsonOutput
 import io.restassured.http.ContentType
 import io.vertx.core.json.Json
-
-import org.apache.http.HttpStatus
-
 import spock.util.concurrent.AsyncConditions
 
 import com.github.leosilvadev.proxy.IntegrationSpec
@@ -35,7 +32,7 @@ class ProxyServerBindingSpec extends IntegrationSpec {
 		def response = request.get('http://localhost:8001/users')
 
 		then:
-		response.statusCode() == HttpStatus.SC_OK
+		response.statusCode() == 200
 
 		and:
 		response.contentType() == 'application/json'
@@ -52,7 +49,7 @@ class ProxyServerBindingSpec extends IntegrationSpec {
 		def response = request.get('http://localhost:8001/users/params?param1=1&param2=2')
 
 		then:
-		response.statusCode() == HttpStatus.SC_OK
+		response.statusCode() == 200
 
 		and:
 		response.contentType() == 'application/json'
@@ -72,7 +69,7 @@ class ProxyServerBindingSpec extends IntegrationSpec {
 		def response = request.post('http://localhost:8001/users')
 
 		then:
-		response.statusCode() == HttpStatus.SC_CREATED
+		response.statusCode() == 201
 
 		and:
 		response.contentType() == 'application/json'
@@ -89,7 +86,7 @@ class ProxyServerBindingSpec extends IntegrationSpec {
 		def response = request.get('http://localhost:8001/users/timeout')
 
 		then:
-		response.statusCode() == HttpStatus.SC_GATEWAY_TIMEOUT
+		response.statusCode() == 504
 	}
 
 	def 'Should return status 400 when calling /badRequest'() {
@@ -100,7 +97,7 @@ class ProxyServerBindingSpec extends IntegrationSpec {
 		def response = request.get('http://localhost:8001/users/badRequest')
 
 		then:
-		response.statusCode() == HttpStatus.SC_BAD_REQUEST
+		response.statusCode() == 400
 
 		and:
 		response.header('application') == 'vertx-proxy'

@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.*
 import groovy.json.JsonOutput
 import io.restassured.http.ContentType
 import io.vertx.core.Future
+import io.vertx.core.json.Json
 import spock.util.concurrent.AsyncConditions
 
 import com.github.leosilvadev.proxy.IntegrationSpec
@@ -22,10 +23,6 @@ class ProxyServerEndpointsSpec extends IntegrationSpec {
 			conds.evaluate { assert res.succeeded() }
 		}
 		conds.await 5
-	}
-	
-	def ''() {
-		assert 1==1
 	}
 
 	def 'Should forward a GET request to /users'() {
@@ -50,10 +47,10 @@ class ProxyServerEndpointsSpec extends IntegrationSpec {
 		def request = given().accept(ContentType.JSON)
 
 		when:
-		def response = request.get('http://localhost:8001/users/params?param1=1&param2=2')
+		def response = request.get('http://localhost:8002/users/params?param1=1&param2=2')
 
 		then:
-		response.statusCode() == HttpStatus.SC_OK
+		response.statusCode() == 200
 
 		and:
 		response.contentType() == 'application/json'
