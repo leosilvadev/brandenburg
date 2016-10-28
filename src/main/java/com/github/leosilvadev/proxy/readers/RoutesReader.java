@@ -14,25 +14,25 @@ import io.vertx.core.logging.LoggerFactory;
 
 @Component
 public class RoutesReader {
-
-	private static final Logger logger = LoggerFactory.getLogger(ProxyServer.class);
-
-	private final Vertx vertx;
-
-	public RoutesReader(Vertx vertx) {
-		this.vertx = vertx;
-	}
-
-	public void read(String path, Function<JsonObject, Object> callback) {
-		vertx.fileSystem().readFile(path, (fileResult) -> {
-			Buffer buffer = fileResult.result();
-			if (buffer == null) {
-				logger.error("Routes File {0} not found!", path);
-
-			} else {
-				callback.apply(buffer.toJsonObject());
-			}
-		});
-	}
-
+  
+  private static final Logger logger = LoggerFactory.getLogger(ProxyServer.class);
+  
+  private final Vertx vertx;
+  
+  public RoutesReader(Vertx vertx) {
+    this.vertx = vertx;
+  }
+  
+  public void read(String path, Function<JsonObject, Object> callback) {
+    vertx.fileSystem().readFile(path, (fileResult) -> {
+      Buffer buffer = fileResult.result();
+      if (buffer == null) {
+        logger.error("Routes File {0} not found!", path);
+        
+      } else {
+        callback.apply(buffer.toJsonObject());
+      }
+    });
+  }
+  
 }

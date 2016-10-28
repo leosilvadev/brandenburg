@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Autowired
 @Component
 public @interface Middleware {
-
-	String value() default "";
-
+  
+  String value() default "";
+  
 }

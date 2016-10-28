@@ -22,98 +22,100 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
 public class ProxyRouter {
-
-	private static final Logger logger = LoggerFactory.getLogger(ProxyRouter.class);
-
-	private final Vertx vertx;
-	private final Router router;
-
-	public ProxyRouter(Vertx vertx, Router router) {
-		this.vertx = vertx;
-		this.router = router;
-	}
-
-	public void route(JsonObject routes, List<AbstractMiddleware> middlewares) {
-		if (middlewares.isEmpty())
-			logger.warn("No middleware to register!");
-		middlewares.forEach(this::route);
-
-		ProxyRequestForwarder proxyForwarder = new ProxyRequestForwarder(vertx);
-		routes.forEach(entry -> {
-			logger.info("Mapping API {0} ...", entry.getKey());
-			JsonObject apiConfig = (JsonObject) entry.getValue();
-			String url = apiConfig.getString("url");
-			
-			if (url==null || url.isEmpty()) {
-				IllegalArgumentException ex = new IllegalArgumentException("API requires an URL");
-				logger.fatal(ex.getMessage(), ex);
-				throw ex;
-			}
-			
-			Long timeout = apiConfig.getLong("timeout");
-			JsonObject bind = apiConfig.getJsonObject("bind");
-			JsonArray endpointsConfig = apiConfig.getJsonArray("endpoints");
-			if (mustBindApi(bind)) {
-				route(ProxyApiRoute.from(url, bind, timeout), proxyForwarder);
-				
-			} else if(hasEndpoints(endpointsConfig)) {
-				endpointsConfig.forEach(conf -> {
-					JsonObject json = (JsonObject) conf;
-					route(ProxyEndpointRoute.from(url, json, timeout), proxyForwarder);
-				});
-				
-			} else {
-				IllegalArgumentException ex = new IllegalArgumentException("You must configure the API with either bind or specific endpoints");
-				logger.fatal(ex.getMessage(), ex);
-				throw ex;
-			}
-			logger.info("API {0} mapped successfully.", entry.getKey());
-		});
-	}
-
-	private Boolean hasEndpoints(JsonArray endpointsConfig) {
-		return endpointsConfig != null && endpointsConfig.size() > 0;
-	}
-	
-	private Boolean mustBindApi(JsonObject json) {
-		return json != null && json.getBoolean("active");
-	}
-
-	private Route route(AbstractMiddleware middleware) {
-		Middleware mapping = middleware.getClass().getAnnotation(Middleware.class);
-		String path = mapping.value();
-		if (path == null || path.isEmpty()) {
-			logger.info("Registering middleware for all the endpoints");
-			return router.route().handler(middleware);
-		}
-		logger.info("Registering middleware for {0}", path);
-		return router.route(path).handler(middleware);
-	}
-
-	private Route route(ProxyApiRoute route, RequestForwarder forwarder) {
-		String endpointPath = String.format("%s/*", route.getTargetPath());
-		logger.info("Routing all endpoints for {0} to api {1}", endpointPath, route.getUrl());
-		return router.route(endpointPath).handler(context -> {
-			TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, route.getUrl(), route.getTargetPath())
-					.appendPath(route.getAppendPath()).setTimeout(route.getTimeout()).build();
-			forwarder.forward(targetEndpoint, context.request(), context.response());
-		});
-	}
-
-	private Route route(ProxyEndpointRoute route, RequestForwarder forwarder) {
-		String pathFrom = route.getFromPath();
-		String urlTo = route.getUrlTo();
-		logger.info("Routing endpoint with method {0} and path {1} to api {2} method {3}", route.getFromMethod(), pathFrom, urlTo, route.getToMethod());
-		Handler<RoutingContext> handler = (context) -> {
-			TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, route.getUrlTo(), route.getToPath())
-					.setTimeout(route.getTimeout()).setMethod(route.getToMethod()).build();
-			forwarder.forward(targetEndpoint, context.request(), context.response());
-		};
-
-		if (route.isThereFromMethod()) {
-			return router.route(route.getFromMethod(), pathFrom).handler(handler);
-		} else {
-			return router.route(pathFrom).handler(handler);
-		}
-	}
+  
+  private static final Logger logger = LoggerFactory.getLogger(ProxyRouter.class);
+  
+  private final Vertx vertx;
+  private final Router router;
+  
+  public ProxyRouter(Vertx vertx, Router router) {
+    this.vertx = vertx;
+    this.router = router;
+  }
+  
+  public void route(JsonObject routes, List<AbstractMiddleware> middlewares) {
+    if (middlewares.isEmpty())
+      logger.warn("No middleware to register!");
+    middlewares.forEach(this::route);
+    
+    ProxyRequestForwarder proxyForwarder = new ProxyRequestForwarder(vertx);
+    routes.forEach(entry -> {
+      logger.info("Mapping API {0} ...", entry.getKey());
+      JsonObject apiConfig = (JsonObject) entry.getValue();
+      String url = apiConfig.getString("url");
+      
+      if (url == null || url.isEmpty()) {
+        IllegalArgumentException ex = new IllegalArgumentException("API requires an URL");
+        logger.fatal(ex.getMessage(), ex);
+        throw ex;
+      }
+      
+      Long timeout = apiConfig.getLong("timeout");
+      JsonObject bind = apiConfig.getJsonObject("bind");
+      JsonArray endpointsConfig = apiConfig.getJsonArray("endpoints");
+      if (mustBindApi(bind)) {
+        route(ProxyApiRoute.from(url, bind, timeout), proxyForwarder);
+        
+      } else if (hasEndpoints(endpointsConfig)) {
+        endpointsConfig.forEach(conf -> {
+          JsonObject json = (JsonObject) conf;
+          route(ProxyEndpointRoute.from(url, json, timeout), proxyForwarder);
+        });
+        
+      } else {
+        IllegalArgumentException ex = new IllegalArgumentException(
+            "You must configure the API with either bind or specific endpoints");
+        logger.fatal(ex.getMessage(), ex);
+        throw ex;
+      }
+      logger.info("API {0} mapped successfully.", entry.getKey());
+    });
+  }
+  
+  private Boolean hasEndpoints(JsonArray endpointsConfig) {
+    return endpointsConfig != null && endpointsConfig.size() > 0;
+  }
+  
+  private Boolean mustBindApi(JsonObject json) {
+    return json != null && json.getBoolean("active");
+  }
+  
+  private Route route(AbstractMiddleware middleware) {
+    Middleware mapping = middleware.getClass().getAnnotation(Middleware.class);
+    String path = mapping.value();
+    if (path == null || path.isEmpty()) {
+      logger.info("Registering middleware for all the endpoints");
+      return router.route().handler(middleware);
+    }
+    logger.info("Registering middleware for {0}", path);
+    return router.route(path).handler(middleware);
+  }
+  
+  private Route route(ProxyApiRoute route, RequestForwarder forwarder) {
+    String endpointPath = String.format("%s/*", route.getTargetPath());
+    logger.info("Routing all endpoints for {0} to api {1}", endpointPath, route.getUrl());
+    return router.route(endpointPath).handler(context -> {
+      TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, route.getUrl(), route.getTargetPath())
+          .appendPath(route.getAppendPath()).setTimeout(route.getTimeout()).build();
+      forwarder.forward(targetEndpoint, context.request(), context.response());
+    });
+  }
+  
+  private Route route(ProxyEndpointRoute route, RequestForwarder forwarder) {
+    String pathFrom = route.getFromPath();
+    String urlTo = route.getUrlTo();
+    logger.info("Routing endpoint with method {0} and path {1} to api {2} method {3}", route.getFromMethod(), pathFrom,
+        urlTo, route.getToMethod());
+    Handler<RoutingContext> handler = (context) -> {
+      TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, route.getUrlTo(), route.getToPath())
+          .setTimeout(route.getTimeout()).setMethod(route.getToMethod()).build();
+      forwarder.forward(targetEndpoint, context.request(), context.response());
+    };
+    
+    if (route.isThereFromMethod()) {
+      return router.route(route.getFromMethod(), pathFrom).handler(handler);
+    } else {
+      return router.route(pathFrom).handler(handler);
+    }
+  }
 }

@@ -17,5 +17,5 @@ import com.github.leosilvadev.proxy.config.ProxyConfigurer;
 @Documented
 @Import({ ProxyConfigurer.class })
 public @interface EnableBrandenburgProxy {
-
+  
 }

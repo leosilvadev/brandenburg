@@ -4,9 +4,10 @@
 		"timeout": 500,
 		"bind": {
 			"active": true,
-			"path":"/users",
-			"append_path":true
+			"path": "/users",
+			"append_path": true
 		},
-		"endpoints": []
+		"endpoints": [
+		]
 	}
 }

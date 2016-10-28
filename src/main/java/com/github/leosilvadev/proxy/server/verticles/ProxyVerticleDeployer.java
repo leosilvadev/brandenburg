@@ -10,12 +10,11 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
 public class ProxyVerticleDeployer {
-
-	public void deploy(Vertx vertx, ApplicationConfig applicationConfig, List<AbstractMiddleware> middlewares) {
-		JsonObject json = new JsonObject()
-				.put(ApplicationConfig.PORT_JSON, applicationConfig.getPort())
-				.put(ApplicationConfig.ROUTES_PATH_JSON, applicationConfig.getRoutesPath());
-		vertx.deployVerticle(new ProxyVerticle(middlewares), new DeploymentOptions().setConfig(json));
-	}
-
+  
+  public void deploy(Vertx vertx, ApplicationConfig applicationConfig, List<AbstractMiddleware> middlewares) {
+    JsonObject json = new JsonObject().put(ApplicationConfig.PORT_JSON, applicationConfig.getPort())
+        .put(ApplicationConfig.ROUTES_PATH_JSON, applicationConfig.getRoutesPath());
+    vertx.deployVerticle(new ProxyVerticle(middlewares), new DeploymentOptions().setConfig(json));
+  }
+  
 }

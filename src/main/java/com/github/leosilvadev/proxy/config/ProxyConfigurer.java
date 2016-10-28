@@ -15,30 +15,30 @@ import io.vertx.core.Vertx;
 
 @Configuration
 public class ProxyConfigurer {
-
-	@Autowired(required=false)
-	private List<AbstractMiddleware> middlewares;
-	
-	@Value("${server.port}")
-	private Integer port;
-	
-	@Value("${proxy.routes.path}")
-	private String path;
-	
-	@Bean
-	public ApplicationConfig applicationConfig() {
-		return new ApplicationConfig(port, path);
-	}
-	
-	@Bean
-	public Vertx vertx() {
-		return Vertx.vertx();
-	}
-
-	@Bean
-	public ProxyVerticleDeployer proxyVerticleDeployer() {
-		ProxyVerticleDeployer deployer = new ProxyVerticleDeployer();
-		deployer.deploy(vertx(), applicationConfig(), middlewares == null ? new ArrayList<>() : middlewares);
-		return deployer;
-	}
+  
+  @Autowired(required = false)
+  private List<AbstractMiddleware> middlewares;
+  
+  @Value("${server.port}")
+  private Integer port;
+  
+  @Value("${proxy.routes.path}")
+  private String path;
+  
+  @Bean
+  public ApplicationConfig applicationConfig() {
+    return new ApplicationConfig(port, path);
+  }
+  
+  @Bean
+  public Vertx vertx() {
+    return Vertx.vertx();
+  }
+  
+  @Bean
+  public ProxyVerticleDeployer proxyVerticleDeployer() {
+    ProxyVerticleDeployer deployer = new ProxyVerticleDeployer();
+    deployer.deploy(vertx(), applicationConfig(), middlewares == null ? new ArrayList<>() : middlewares);
+    return deployer;
+  }
 }
