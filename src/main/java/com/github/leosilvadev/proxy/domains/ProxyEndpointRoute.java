@@ -1,5 +1,7 @@
 package com.github.leosilvadev.proxy.domains;
 
+import com.github.leosilvadev.proxy.utils.HttpMethodUtils;
+
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 
@@ -71,15 +73,14 @@ public class ProxyEndpointRoute {
     if (from == null)
       throw new IllegalArgumentException("Api Endpoint required a 'from' mapping");
     
-    String methodStr = from.getString("method");
-    HttpMethod fromMethod = methodStr == null ? null : HttpMethod.valueOf(methodStr);
+    HttpMethod fromMethod = HttpMethodUtils.from(from);
     String fromPath = from.getString("path");
     
     if (fromPath == null || fromPath.isEmpty())
       throw new IllegalArgumentException("Api Endpoint required a path mapping");
     
     JsonObject to = json.getJsonObject("to") == null ? from : json.getJsonObject("to");
-    HttpMethod toMethod = to.getString("method") == null ? fromMethod : HttpMethod.valueOf(to.getString("method"));
+    HttpMethod toMethod = HttpMethodUtils.from(to);
     String toPath = to.getString("path") == null ? fromPath : to.getString("path");
     
     return new ProxyEndpointRoute(url, fromMethod, fromPath, toMethod, toPath, timeout);

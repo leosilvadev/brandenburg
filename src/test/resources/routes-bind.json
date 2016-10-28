@@ -1,13 +1,32 @@
 {
-	"books-api": {
-		"url": "http://localhost:9001",
-		"timeout": 500,
-		"bind": {
-			"active": true,
-			"path": "/users",
-			"append_path": true
-		},
-		"endpoints": [
-		]
-	}
+  "books-api": {
+    "cors": {
+      "allow": {
+        "credentials": true,
+        "origin_pattern": "*",
+        "headers": [
+          "X-Auth-ID",
+          "Custom-Header"
+        ],
+        "methods": [
+          "GET",
+          "POST"
+        ]
+      },
+      "expose": {
+        "headers": [
+          "Response-ID"
+        ]
+      }
+    },
+    "url": "http://localhost:9001",
+    "timeout": 500,
+    "bind": {
+      "active": true,
+      "path": "/users",
+      "append_path": true
+    },
+    "endpoints": [
+    ]
+  }
 }

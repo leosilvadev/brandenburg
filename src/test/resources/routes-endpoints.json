@@ -1,34 +1,39 @@
 {
-	"books-api": {
-		"url": "http://localhost:9002",
-		"endpoints": [{
-			"from": {
-				"method":"GET",
-				"path":"/users"
-			},
-			"to": {
-				"method":"GET",
-				"path":"/users"
-			}
-		},{
-			"from": {
-				"method":"GET",
-				"path":"/users/params"
-			}
-		}, {
-			"from": {
-				"method":"PUT",
-				"path":"/users"
-			},
-			"to": {
-				"method":"POST",
-				"path":"/users"
-			}
-		}, {
-			"from": {
-				"method":"POST",
-				"path":"/users"
-			}
-		}]
-	}
+  "books-api": {
+    "url": "http://localhost:9002",
+    "endpoints": [
+      {
+        "from": {
+          "method": "GET",
+          "path": "/users"
+        },
+        "to": {
+          "method": "GET",
+          "path": "/users"
+        }
+      },
+      {
+        "from": {
+          "method": "GET",
+          "path": "/users/params"
+        }
+      },
+      {
+        "from": {
+          "method": "PUT",
+          "path": "/users"
+        },
+        "to": {
+          "method": "POST",
+          "path": "/users"
+        }
+      },
+      {
+        "from": {
+          "method": "POST",
+          "path": "/users"
+        }
+      }
+    ]
+  }
 }

@@ -13,13 +13,13 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
 @Component
-public class RoutesReader {
+public class ConfigReader {
   
   private static final Logger logger = LoggerFactory.getLogger(ProxyServer.class);
   
   private final Vertx vertx;
   
-  public RoutesReader(Vertx vertx) {
+  public ConfigReader(Vertx vertx) {
     this.vertx = vertx;
   }
   

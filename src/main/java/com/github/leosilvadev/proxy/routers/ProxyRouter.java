@@ -2,6 +2,7 @@ package com.github.leosilvadev.proxy.routers;
 
 import java.util.List;
 
+import com.github.leosilvadev.proxy.domains.CorsRoute;
 import com.github.leosilvadev.proxy.domains.ProxyApiRoute;
 import com.github.leosilvadev.proxy.domains.ProxyEndpointRoute;
 import com.github.leosilvadev.proxy.domains.TargetEndpoint;
@@ -20,6 +21,7 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.CorsHandler;
 
 public class ProxyRouter {
   
@@ -48,6 +50,11 @@ public class ProxyRouter {
         IllegalArgumentException ex = new IllegalArgumentException("API requires an URL");
         logger.fatal(ex.getMessage(), ex);
         throw ex;
+      }
+      
+      JsonObject corsConfig = apiConfig.getJsonObject("cors");
+      if (corsConfig != null) {
+        route(CorsRoute.from(corsConfig));
       }
       
       Long timeout = apiConfig.getLong("timeout");
@@ -99,6 +106,34 @@ public class ProxyRouter {
           .appendPath(route.getAppendPath()).setTimeout(route.getTimeout()).build();
       forwarder.forward(targetEndpoint, context.request(), context.response());
     });
+  }
+  
+  private Route route(CorsRoute corsRoute) {
+    CorsHandler corsHandler = CorsHandler.create(corsRoute.getAllowedOriginPattern());
+    
+    if (corsRoute.getAllowCredentials() != null)
+      corsHandler.allowCredentials(corsRoute.getAllowCredentials());
+    
+    if (corsRoute.getAllowHeaders() != null)
+      corsHandler.allowedHeaders(corsRoute.getAllowHeaders());
+    
+    if (corsRoute.getAllowMethods() != null)
+      corsHandler.allowedMethods(corsRoute.getAllowMethods());
+    
+    if (corsRoute.getExposeHeaders() != null)
+      corsHandler.exposedHeaders(corsRoute.getExposeHeaders());
+    
+    if (corsRoute.getFromPath() == null) {
+      if (corsRoute.getFromMethod() == null) {
+        return router.route().handler(corsHandler);
+      } else {
+        throw new IllegalArgumentException("Cannot configure CORS for a specific Method without a Path");
+      }
+    } else if (corsRoute.getFromMethod() == null) {
+      return router.route(corsRoute.getFromPath()).handler(corsHandler);
+    } else {
+      return router.route(corsRoute.getFromMethod(), corsRoute.getFromPath()).handler(corsHandler);
+    }
   }
   
   private Route route(ProxyEndpointRoute route, RequestForwarder forwarder) {
