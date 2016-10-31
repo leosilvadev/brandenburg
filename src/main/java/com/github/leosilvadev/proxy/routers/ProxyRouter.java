@@ -10,7 +10,6 @@ import com.github.leosilvadev.proxy.domains.TargetEndpoint.TargetEndpointBuilder
 import com.github.leosilvadev.proxy.forwarders.ProxyRequestForwarder;
 import com.github.leosilvadev.proxy.forwarders.RequestForwarder;
 import com.github.leosilvadev.proxy.middlewares.AbstractMiddleware;
-import com.github.leosilvadev.proxy.middlewares.Middleware;
 
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
@@ -88,8 +87,7 @@ public class ProxyRouter {
   }
   
   private Route route(AbstractMiddleware middleware) {
-    Middleware mapping = middleware.getClass().getAnnotation(Middleware.class);
-    String path = mapping.value();
+    String path = middleware.path();
     if (path == null || path.isEmpty()) {
       logger.info("Registering middleware for all the endpoints");
       return router.route().handler(middleware);

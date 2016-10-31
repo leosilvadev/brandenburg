@@ -14,7 +14,7 @@ public abstract class AbstractMiddleware implements Handler<RoutingContext> {
   public abstract void handleRequest(RoutingContext context);
   
   @Override
-  public void handle(RoutingContext context) {
+  public final void handle(RoutingContext context) {
     try {
       handleRequest(context);
     } catch (Exception ex) {
@@ -22,4 +22,9 @@ public abstract class AbstractMiddleware implements Handler<RoutingContext> {
       Response.internalServerError(context);
     }
   }
+  
+  public String path() {
+    return null;
+  }
+  
 }
