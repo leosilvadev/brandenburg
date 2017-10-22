@@ -2,7 +2,6 @@ plugins {
 	id 'java'
 	id 'groovy'
 	id 'application'
-	id 'eclipse'
 	id 'jacoco'
 	id 'com.github.kt3k.coveralls' version '2.6.3'
 	id 'maven'
