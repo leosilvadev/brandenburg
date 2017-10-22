@@ -14,7 +14,8 @@ public class ProxyEndpointRoute {
   private final String toPath;
   private Long timeout;
   
-  public ProxyEndpointRoute(String url, HttpMethod fromMethod, String fromPath, HttpMethod toMethod, String toPath) {
+  public ProxyEndpointRoute(final String url, final HttpMethod fromMethod, final String fromPath,
+                            final HttpMethod toMethod, final String toPath) {
     super();
     this.url = url;
     this.fromMethod = fromMethod;
@@ -23,7 +24,8 @@ public class ProxyEndpointRoute {
     this.toPath = toPath;
   }
   
-  public ProxyEndpointRoute(String url, HttpMethod fromMethod, String fromPath, HttpMethod toMethod, String toPath,
+  public ProxyEndpointRoute(final String url, final HttpMethod fromMethod, final String fromPath,
+                            final HttpMethod toMethod, final String toPath,
       Long timeout) {
     this(url, fromMethod, fromPath, toMethod, toPath);
     this.timeout = timeout;
@@ -61,27 +63,26 @@ public class ProxyEndpointRoute {
     return timeout;
   }
   
-  private String pathOf(String path) {
+  private String pathOf(final String path) {
     return path.startsWith("/") ? path : "/" + path;
   }
   
-  public static ProxyEndpointRoute from(String url, JsonObject json, Long defaultTimeout) {
-    Long timeout = json.getLong("timeout", defaultTimeout);
-    
-    JsonObject from = json.getJsonObject("from");
+  public static ProxyEndpointRoute from(final String url, final JsonObject json, final Long defaultTimeout) {
+    final Long timeout = json.getLong("timeout", defaultTimeout);
+    final JsonObject from = json.getJsonObject("from");
     
     if (from == null)
       throw new IllegalArgumentException("Api Endpoint required a 'from' mapping");
-    
-    HttpMethod fromMethod = HttpMethodUtils.from(from);
-    String fromPath = from.getString("path");
+
+    final HttpMethod fromMethod = HttpMethodUtils.from(from);
+    final String fromPath = from.getString("path");
     
     if (fromPath == null || fromPath.isEmpty())
       throw new IllegalArgumentException("Api Endpoint required a path mapping");
-    
-    JsonObject to = json.getJsonObject("to") == null ? from : json.getJsonObject("to");
-    HttpMethod toMethod = HttpMethodUtils.from(to);
-    String toPath = to.getString("path") == null ? fromPath : to.getString("path");
+
+    final JsonObject to = json.getJsonObject("to") == null ? from : json.getJsonObject("to");
+    final HttpMethod toMethod = HttpMethodUtils.from(to);
+    final String toPath = to.getString("path") == null ? fromPath : to.getString("path");
     
     return new ProxyEndpointRoute(url, fromMethod, fromPath, toMethod, toPath, timeout);
   }

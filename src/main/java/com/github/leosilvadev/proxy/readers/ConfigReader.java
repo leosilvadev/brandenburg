@@ -23,7 +23,7 @@ public class ConfigReader {
     this.vertx = vertx;
   }
   
-  public void read(String path, Function<JsonObject, Object> callback) {
+  public void read(final String path, final Function<JsonObject, Object> callback) {
     vertx.fileSystem().readFile(path, (fileResult) -> {
       Buffer buffer = fileResult.result();
       if (buffer == null) {

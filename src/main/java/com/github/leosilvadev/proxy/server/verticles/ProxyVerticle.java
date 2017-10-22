@@ -29,15 +29,14 @@ public class ProxyVerticle extends AbstractVerticle {
   }
   
   @Override
-  public void start(Future<Void> future) throws Exception {
+  public void start(final Future<Void> future) throws Exception {
     try {
-      JsonObject config = config();
-      Integer port = config.getInteger(ApplicationConfig.PORT_JSON, 8080);
-      String routesPath = config.getString(ApplicationConfig.ROUTES_PATH_JSON, ProxyServerConfig.DEFAULT_ROUTES_FILE);
+      final JsonObject config = config();
+      final Integer port = config.getInteger(ApplicationConfig.PORT_JSON, 8080);
+      final String routesPath = config.getString(ApplicationConfig.ROUTES_PATH_JSON, ProxyServerConfig.DEFAULT_ROUTES_FILE);
       new ProxyServer(vertx, new ProxyServerConfig(port, routesPath)).run(middlewares);
       future.complete();
     } catch (Exception ex) {
-      ex.printStackTrace();
       logger.error(ex.getMessage(), ex);
       future.fail(ex);
     }

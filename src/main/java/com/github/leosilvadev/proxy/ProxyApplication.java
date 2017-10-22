@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan
 public class ProxyApplication {
   
-  public static void main(String[] args) {
+  public static void main(final String[] args) {
     SpringApplication.run(ProxyApplication.class, args);
   }
   
