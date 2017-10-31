@@ -33,7 +33,7 @@ public class ProxyServer {
   
   public Future<ProxyServer> run(final List<AbstractMiddleware> middlewares) {
     final Future<ProxyServer> future = Future.future();
-    logger.info("Reading Routes file from {0}", config.getRoutesFilePath());
+    logger.info("Reading Routes file from {}", config.getRoutesFilePath());
     new ConfigReader(vertx).read(config.getRoutesFilePath(), routes -> {
       new ProxyRouter(vertx, router).route(routes, middlewares);
       return server.requestHandler(router::accept).listen(config.getPort(), onListening(future));
@@ -44,7 +44,7 @@ public class ProxyServer {
   private Handler<AsyncResult<HttpServer>> onListening(final Future<ProxyServer> future) {
     return (serverResult) -> {
       if (serverResult.succeeded()) {
-        logger.info("Proxy Server running on port {0}", config.getPort());
+        logger.info("Proxy Server running on port {}", config.getPort());
         future.complete(this);
       } else {
         logger.error("Error trying to run Proxy Server", serverResult.cause());

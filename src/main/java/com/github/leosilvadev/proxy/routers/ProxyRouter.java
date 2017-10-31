@@ -42,7 +42,7 @@ public class ProxyRouter {
 
     final ProxyRequestForwarder proxyForwarder = new ProxyRequestForwarder(vertx);
     routes.forEach(entry -> {
-      logger.info("Mapping API {0} ...", entry.getKey());
+      logger.info("Mapping API {} ...", entry.getKey());
       final JsonObject apiConfig = (JsonObject) entry.getValue();
       final String url = apiConfig.getString("url");
 
@@ -75,7 +75,7 @@ public class ProxyRouter {
         logger.fatal(ex.getMessage(), ex);
         throw ex;
       }
-      logger.info("API {0} mapped successfully.", entry.getKey());
+      logger.info("API {} mapped successfully.", entry.getKey());
     });
   }
 
@@ -93,13 +93,13 @@ public class ProxyRouter {
       logger.info("Registering middleware for all the endpoints");
       return router.route().handler(middleware);
     }
-    logger.info("Registering middleware for {0}", path);
+    logger.info("Registering middleware for {}", path);
     return router.route(path).handler(middleware);
   }
 
   private Route route(final ProxyApiRoute route, final RequestForwarder forwarder) {
     final String endpointPath = String.format("%s/*", route.getTargetPath());
-    logger.info("Routing all endpoints for {0} to api {1}", endpointPath, route.getUrl());
+    logger.info("Routing all endpoints for {} to api {}", endpointPath, route.getUrl());
     return router.route(endpointPath).handler(context -> {
       final TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, route.getUrl(), route.getTargetPath())
           .appendPath(route.getAppendPath()).setTimeout(route.getTimeout()).build();
@@ -138,7 +138,7 @@ public class ProxyRouter {
   private Route route(final ProxyEndpointRoute route, final RequestForwarder forwarder) {
     final String pathFrom = route.getFromPath();
     final String urlTo = route.getUrlTo();
-    logger.info("Routing endpoint with method {0} and path {1} to api {2} method {3}", route.getFromMethod(), pathFrom,
+    logger.info("Routing endpoint with method {} and path {} to api {} method {}", route.getFromMethod(), pathFrom,
         urlTo, route.getToMethod());
     final Handler<RoutingContext> handler = (context) -> {
       final TargetEndpoint targetEndpoint = new TargetEndpointBuilder(context, route.getUrlTo(), route.getToPath())

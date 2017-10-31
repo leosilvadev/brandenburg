@@ -25,9 +25,9 @@ public class ConfigReader {
   
   public void read(final String path, final Function<JsonObject, Object> callback) {
     vertx.fileSystem().readFile(path, (fileResult) -> {
-      Buffer buffer = fileResult.result();
+      final Buffer buffer = fileResult.result();
       if (buffer == null) {
-        logger.error("Routes File {0} not found!", path);
+        logger.error("Routes File {} not found!", path);
         
       } else {
         callback.apply(buffer.toJsonObject());

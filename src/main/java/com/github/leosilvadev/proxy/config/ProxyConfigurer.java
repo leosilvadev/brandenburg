@@ -37,7 +37,7 @@ public class ProxyConfigurer {
   
   @Bean
   public ProxyVerticleDeployer proxyVerticleDeployer() {
-    ProxyVerticleDeployer deployer = new ProxyVerticleDeployer();
+    final ProxyVerticleDeployer deployer = new ProxyVerticleDeployer();
     deployer.deploy(vertx(), applicationConfig(), middlewares == null ? new ArrayList<>() : middlewares);
     return deployer;
   }

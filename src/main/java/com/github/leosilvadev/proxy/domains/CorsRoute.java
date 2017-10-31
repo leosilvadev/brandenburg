@@ -63,7 +63,7 @@ public class CorsRoute {
   }
 
   @SuppressWarnings("unchecked")
-  public static CorsRoute from(JsonObject json) {
+  public static CorsRoute from(final JsonObject json) {
     if (json == null)
       return null;
 
@@ -74,7 +74,7 @@ public class CorsRoute {
     JsonArray allowHeaders;
     JsonArray allowMethods;
     JsonArray exposeHeaders;
-    JsonObject allowConfig = json.getJsonObject("allow");
+    final JsonObject allowConfig = json.getJsonObject("allow");
 
     if (allowConfig == null)
       return null;
@@ -84,7 +84,7 @@ public class CorsRoute {
     allowHeaders = allowConfig.getJsonArray("headers", new JsonArray());
     allowMethods = allowConfig.getJsonArray("methods", new JsonArray());
 
-    JsonObject exposeConfig = json.getJsonObject("expose", new JsonObject().put("headers", new JsonArray()));
+    final JsonObject exposeConfig = json.getJsonObject("expose", new JsonObject().put("headers", new JsonArray()));
     exposeHeaders = exposeConfig.getJsonArray("headers");
 
     return new CorsRoute(
