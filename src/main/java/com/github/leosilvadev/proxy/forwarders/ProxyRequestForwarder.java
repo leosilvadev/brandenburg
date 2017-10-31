@@ -89,7 +89,7 @@ public class ProxyRequestForwarder implements RequestForwarder {
       cliResponse.setStatusCode(status).end(ex.getMessage());
     };
   }
--
+
   private Handler<Buffer> fillRequestAndSend(final HttpClientRequest request, final MultiMap headers) {
     return (body) -> {
       if (body != null && body.length() > 0) {
