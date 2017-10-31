@@ -39,7 +39,7 @@ public class ProxyApiRoute {
     if (path == null || path.isEmpty())
       throw new IllegalArgumentException("Api Routing must have a path to map");
 
-    final Boolean appendPath = json.getBoolean("append_path");
-    return new ProxyApiRoute(url, path, timeout, appendPath == null ? Boolean.TRUE : appendPath);
+    final Boolean appendPath = json.getBoolean("append_path", true);
+    return new ProxyApiRoute(url, path, timeout, appendPath);
   }
 }

@@ -7,7 +7,6 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.*;
-import io.vertx.core.http.impl.HttpClientImpl;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
@@ -68,17 +67,17 @@ public class ProxyRequestForwarder implements RequestForwarder {
     return (response) -> {
       cliResponse.headers().setAll(response.headers());
       cliResponse.setStatusCode(response.statusCode());
-      response.bodyHandler(respondTo(cliResponse));
-      client.close();
+      response.bodyHandler(respondTo(cliResponse, client));
     };
   }
 
-  private Handler<Buffer> respondTo(final HttpServerResponse cliResponse) {
+  private Handler<Buffer> respondTo(final HttpServerResponse cliResponse, final HttpClient client) {
     return (buffer) -> {
       if (buffer != null) {
         cliResponse.putHeader("Content-Length", String.valueOf(buffer.length())).write(buffer);
       }
       cliResponse.end();
+      client.close();
     };
   }
 
