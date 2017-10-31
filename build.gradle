@@ -27,8 +27,8 @@ jacocoTestReport {
 repositories { mavenCentral() }
 
 dependencies {
+	compile 'ch.qos.logback:logback-classic:1.2.3'
 	compile 'io.vertx:vertx-web:3.3.+'
-	compile 'org.apache.logging.log4j:log4j-core:2.6.+'
 	compile 'org.springframework.boot:spring-boot-starter:1.4.+'
 	testCompile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.6'
 	testCompile 'io.rest-assured:rest-assured:3.0.+'
@@ -38,6 +38,7 @@ dependencies {
 }
 
 mainClassName = 'com.github.leosilvadev.proxy.ProxyApplication'
+applicationDefaultJvmArgs = ["-Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory"]
 
 task wrapper(type: Wrapper) { gradleVersion = '2.8' }
 
@@ -50,6 +51,8 @@ task sourcesJar(type: Jar) {
 	classifier = 'sources'
 	from sourceSets.main.allSource
 }
+
+
 
 artifacts { archives javadocJar, sourcesJar }
 
