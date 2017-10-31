@@ -27,7 +27,6 @@ repositories { mavenCentral() }
 dependencies {
 	compile 'ch.qos.logback:logback-classic:1.2.3'
 	compile 'io.vertx:vertx-web:3.3.+'
-	compile 'org.springframework.boot:spring-boot-starter:1.4.+'
 	testCompile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.6'
 	testCompile 'io.rest-assured:rest-assured:3.0.+'
 	testCompile 'io.rest-assured:json-path:3.0.+'
@@ -35,7 +34,7 @@ dependencies {
 	testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }
 
-mainClassName = 'com.github.leosilvadev.proxy.ProxyApplication'
+mainClassName = 'com.github.leosilvadev.proxy.Application'
 applicationDefaultJvmArgs = ["-Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory"]
 
 task wrapper(type: Wrapper) { gradleVersion = '2.8' }

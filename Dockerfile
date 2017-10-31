@@ -10,6 +10,9 @@ RUN gradle clean test
 
 RUN gradle installDist
 
-RUN ls build/install
+RUN cp -R build/install/app /app/
 
-ENTRYPOINT ./build/install/app/bin/app
+RUN rm -R src/
+RUN rm -R build/
+
+ENTRYPOINT ./app/bin/app

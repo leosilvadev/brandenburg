@@ -2,8 +2,6 @@ package com.github.leosilvadev.proxy.readers;
 
 import java.util.function.Function;
 
-import org.springframework.stereotype.Component;
-
 import com.github.leosilvadev.proxy.server.ProxyServer;
 
 import io.vertx.core.Vertx;
@@ -12,14 +10,13 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
-@Component
 public class ConfigReader {
   
   private static final Logger logger = LoggerFactory.getLogger(ProxyServer.class);
   
   private final Vertx vertx;
   
-  public ConfigReader(Vertx vertx) {
+  public ConfigReader(final Vertx vertx) {
     this.vertx = vertx;
   }
   

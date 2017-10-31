@@ -23,8 +23,8 @@ public class ProxyVerticle extends AbstractVerticle {
   public ProxyVerticle() {
     this.middlewares = new ArrayList<>();
   }
-  
-  public ProxyVerticle(List<AbstractMiddleware> middlewares) {
+
+  public ProxyVerticle(final List<AbstractMiddleware> middlewares) {
     this.middlewares = middlewares;
   }
   
