@@ -7,6 +7,7 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.*;
+import io.vertx.core.http.impl.HttpClientImpl;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
@@ -16,16 +17,17 @@ public class ProxyRequestForwarder implements RequestForwarder {
 
   private static final Logger logger = LoggerFactory.getLogger(ProxyRequestForwarder.class);
 
-  private final HttpClient client;
+  private final Vertx vertx;
 
   public ProxyRequestForwarder(final Vertx vertx) {
-    this.client = vertx.createHttpClient();
+    this.vertx = vertx;
   }
 
   @Override
   public void forward(final TargetEndpoint endpoint, final HttpServerRequest cliRequest, final HttpServerResponse cliResponse) {
     final String targetUrl = endpoint.getUrl() + queryParams(cliRequest);
     logger.info("Requesting {0} to {1}", endpoint.getMethod(), targetUrl);
+    final HttpClient client = vertx.createHttpClient();
     HttpClientRequest request = buildRequest(endpoint, cliRequest, cliResponse, client);
     cliRequest.bodyHandler(fillRequestAndSend(request, cliRequest.headers()));
   }
@@ -34,7 +36,7 @@ public class ProxyRequestForwarder implements RequestForwarder {
                                          final HttpServerResponse cliResponse, final HttpClient client) {
     final HttpMethod method = endpoint.getMethod() == null ? cliRequest.method() : endpoint.getMethod();
     final String targetUrl = endpoint.getUrl() + queryParams(cliRequest);
-    final HttpClientRequest request = client.requestAbs(method, targetUrl, handleResponse(cliResponse))
+    final HttpClientRequest request = client.requestAbs(method, targetUrl, handleResponse(cliResponse, client))
         .exceptionHandler(handleException(cliResponse));
 
     if (endpoint.hasTimeout())
@@ -61,11 +63,13 @@ public class ProxyRequestForwarder implements RequestForwarder {
     return builder.toString();
   }
 
-  private Handler<HttpClientResponse> handleResponse(final HttpServerResponse cliResponse) {
+  private Handler<HttpClientResponse> handleResponse(final HttpServerResponse cliResponse,
+                                                     final HttpClient client) {
     return (response) -> {
       cliResponse.headers().setAll(response.headers());
       cliResponse.setStatusCode(response.statusCode());
       response.bodyHandler(respondTo(cliResponse));
+      client.close();
     };
   }
 
@@ -85,13 +89,14 @@ public class ProxyRequestForwarder implements RequestForwarder {
       cliResponse.setStatusCode(status).end(ex.getMessage());
     };
   }
-
+-
   private Handler<Buffer> fillRequestAndSend(final HttpClientRequest request, final MultiMap headers) {
     return (body) -> {
-      if (body != null) {
+      if (body != null && body.length() > 0) {
         request.putHeader("Content-Length", String.valueOf(body.length())).write(body);
       }
       request.headers().setAll(headers);
+      request.headers().remove("Host");
       request.end();
     };
   }

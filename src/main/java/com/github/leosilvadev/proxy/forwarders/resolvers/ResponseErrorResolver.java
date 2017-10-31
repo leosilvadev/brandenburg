@@ -14,6 +14,9 @@ public class ResponseErrorResolver {
   }
   
   public static Integer resolveStatus(final Throwable ex) {
+    if (ex.getMessage().toLowerCase().contains("connection refused"))
+      return 502;
+
     for (Class<? extends Throwable> clazz : errors.keySet()) {
       if (clazz.isInstance(ex))
         return errors.get(clazz);

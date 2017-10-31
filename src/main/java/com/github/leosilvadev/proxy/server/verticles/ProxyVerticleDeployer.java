@@ -15,7 +15,7 @@ public class ProxyVerticleDeployer {
                      final List<AbstractMiddleware> middlewares) {
     final JsonObject json = new JsonObject().put(ApplicationConfig.PORT_JSON, applicationConfig.getPort())
         .put(ApplicationConfig.ROUTES_PATH_JSON, applicationConfig.getRoutesPath());
-    vertx.deployVerticle(new ProxyVerticle(middlewares), new DeploymentOptions().setConfig(json));
+    vertx.deployVerticle(new ProxyVerticle(middlewares), new DeploymentOptions().setConfig(json).setWorker(true));
   }
 
 }
