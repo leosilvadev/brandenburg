@@ -6,8 +6,10 @@ COPY gradle.properties /app/gradle.properties
 
 WORKDIR /app
 
-CMD gradle clean test
+RUN gradle clean test
 
-CMD gradle installDist
+RUN gradle installDist
+
+RUN ls build/install
 
 ENTRYPOINT ./build/install/app/bin/app

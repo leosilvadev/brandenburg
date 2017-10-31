@@ -1,0 +1,64 @@
+{
+  "static": {
+    "url": "http://localhost:3000",
+    "bind": {
+      "active": true,
+      "path":"/images",
+      "append_path": false
+    }
+  },
+
+  "users-api": {
+    "url": "http://localhost:8000",
+    "endpoints": [
+      {
+        "from": {
+          "method": "GET",
+          "path": "/api/v1/users"
+        },
+        "to": {
+          "method": "GET",
+          "path": "/api/v1/users"
+        }
+      },
+
+      {
+        "from": {
+          "method": "POST",
+          "path": "/api/v1/users"
+        },
+        "to": {
+          "method": "POST",
+          "path": "/api/v1/users"
+        }
+      }
+    ]
+  },
+
+  "products-api": {
+    "url": "http://localhost:8000",
+    "endpoints": [
+      {
+        "from": {
+          "method": "GET",
+          "path": "/api/v1/products"
+        },
+        "to": {
+          "method": "GET",
+          "path": "/api/v1/products"
+        }
+      },
+
+      {
+        "from": {
+          "method": "POST",
+          "path": "/api/v1/products"
+        },
+        "to": {
+          "method": "POST",
+          "path": "/api/v1/products"
+        }
+      }
+    ]
+  }
+}
