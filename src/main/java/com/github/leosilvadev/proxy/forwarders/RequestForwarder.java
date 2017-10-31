@@ -7,6 +7,6 @@ import io.vertx.core.http.HttpServerResponse;
 
 public interface RequestForwarder {
   
-  void forward(TargetEndpoint endpoint, HttpServerRequest cliRequest, HttpServerResponse cliResponse);
+  void forward(final TargetEndpoint endpoint, final HttpServerRequest cliRequest, final HttpServerResponse cliResponse);
   
 }

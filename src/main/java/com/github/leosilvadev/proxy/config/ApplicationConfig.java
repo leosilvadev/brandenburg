@@ -5,10 +5,10 @@ public class ApplicationConfig {
   public static final String PORT_JSON = "port";
   public static final String ROUTES_PATH_JSON = "routes_path";
   
-  private Integer port;
-  private String routesPath;
+  private final Integer port;
+  private final String routesPath;
   
-  public ApplicationConfig(Integer port, String routesPath) {
+  public ApplicationConfig(final Integer port, final String routesPath) {
     super();
     this.port = port;
     this.routesPath = routesPath;

@@ -14,7 +14,7 @@ public abstract class AbstractMiddleware implements Handler<RoutingContext> {
   public abstract void handleRequest(RoutingContext context);
   
   @Override
-  public final void handle(RoutingContext context) {
+  public final void handle(final RoutingContext context) {
     try {
       handleRequest(context);
     } catch (Exception ex) {

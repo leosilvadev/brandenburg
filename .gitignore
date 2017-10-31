@@ -1,10 +1,13 @@
 .gradle
 .vertx
+.idea
 build/
 bin/
 .classpath
 .project
 .settings
+*.iml
+src/main/resources/routes.json
 
 # Ignore Gradle GUI config
 gradle-app.setting

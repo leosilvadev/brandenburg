@@ -13,7 +13,10 @@ public class ResponseErrorResolver {
     errors.put(TimeoutException.class, 504);
   }
   
-  public static Integer resolveStatus(Throwable ex) {
+  public static Integer resolveStatus(final Throwable ex) {
+    if (ex.getMessage().toLowerCase().contains("connection refused"))
+      return 502;
+
     for (Class<? extends Throwable> clazz : errors.keySet()) {
       if (clazz.isInstance(ex))
         return errors.get(clazz);

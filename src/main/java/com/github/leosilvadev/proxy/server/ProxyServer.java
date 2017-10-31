@@ -24,16 +24,16 @@ public class ProxyServer {
   private final Router router;
   private final ProxyServerConfig config;
   
-  public ProxyServer(Vertx vertx, ProxyServerConfig config) {
+  public ProxyServer(final Vertx vertx, final ProxyServerConfig config) {
     this.vertx = vertx;
     this.config = config;
     this.server = vertx.createHttpServer();
     this.router = Router.router(vertx);
   }
   
-  public Future<ProxyServer> run(List<AbstractMiddleware> middlewares) {
-    Future<ProxyServer> future = Future.future();
-    logger.info("Reading Routes file from {0}", config.getRoutesFilePath());
+  public Future<ProxyServer> run(final List<AbstractMiddleware> middlewares) {
+    final Future<ProxyServer> future = Future.future();
+    logger.info("Reading Routes file from {}", config.getRoutesFilePath());
     new ConfigReader(vertx).read(config.getRoutesFilePath(), routes -> {
       new ProxyRouter(vertx, router).route(routes, middlewares);
       return server.requestHandler(router::accept).listen(config.getPort(), onListening(future));
@@ -41,10 +41,10 @@ public class ProxyServer {
     return future;
   }
   
-  private Handler<AsyncResult<HttpServer>> onListening(Future<ProxyServer> future) {
+  private Handler<AsyncResult<HttpServer>> onListening(final Future<ProxyServer> future) {
     return (serverResult) -> {
       if (serverResult.succeeded()) {
-        logger.info("Proxy Server running on port {0}", config.getPort());
+        logger.info("Proxy Server running on port {}", config.getPort());
         future.complete(this);
       } else {
         logger.error("Error trying to run Proxy Server", serverResult.cause());

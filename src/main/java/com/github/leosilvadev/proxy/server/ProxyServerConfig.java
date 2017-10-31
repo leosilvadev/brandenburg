@@ -6,13 +6,13 @@ public class ProxyServerConfig {
   private final Integer port;
   private final String routesFilePath;
   
-  public ProxyServerConfig(Integer port) {
+  public ProxyServerConfig(final Integer port) {
     super();
     this.port = port;
     this.routesFilePath = DEFAULT_ROUTES_FILE;
   }
   
-  public ProxyServerConfig(Integer port, String routesFilePath) {
+  public ProxyServerConfig(final Integer port, final String routesFilePath) {
     super();
     this.port = port;
     this.routesFilePath = routesFilePath;

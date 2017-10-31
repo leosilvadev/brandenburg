@@ -24,7 +24,7 @@ public abstract class CORSMiddleware extends AbstractMiddleware {
   }
   
   @Override
-  public final void handleRequest(RoutingContext context) {
+  public final void handleRequest(final RoutingContext context) {
     corsHandler.handle(context);
   }
   
